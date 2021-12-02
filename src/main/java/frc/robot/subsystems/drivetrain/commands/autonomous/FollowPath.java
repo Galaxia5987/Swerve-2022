@@ -1,62 +1,64 @@
 package frc.robot.subsystems.drivetrain.commands.autonomous;
 
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.pathplanner.PathPlanner;
+import frc.robot.pathplanner.PathPlannerTrajectory;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class FollowPath extends SwerveControllerCommand {
-
-    /**
-     * For clamped cubic splines, this method accepts two Pose2d objects, one for
-     * the starting waypoint and one for the ending waypoint. The method takes in a
-     * vector of Translation2d objects which represent the interior waypoints. The
-     * headings at these interior waypoints are determined automatically to ensure
-     * continuous curvature. For quintic splines, the method simply takes in a list
-     * of Pose2d objects, with each Pose2d representing a point and heading on the
-     * field.
-     */
-
+public class FollowPath extends CommandBase {
+    private final Timer timer = new Timer();
     private final SwerveDrive swerveDrive;
+    private final PIDController forwardPID;
+    private final PIDController strafePID;
+    private final ProfiledPIDController rotationPID;
+    private final PathPlannerTrajectory target;
+    private HolonomicDriveController hController;
 
-    public FollowPath(SwerveDrive swerveDrive, Trajectory trajectory) {
-        super(
-                trajectory,
-                swerveDrive::getPoseForTrajectory,
-                swerveDrive.kinematics,
-                new PIDController(Constants.Autonomous.kPXController, 0, 0),
-                new PIDController(Constants.Autonomous.kPYController, 0, 0),
-                new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
-                    enableContinuousInput(-Math.PI, Math.PI);
-                }},
-                (SwerveModuleState[] states) -> {
-                    for (int i = 0; i < states.length; i++) {
-                        swerveDrive.getModule(i).setState(
-                                new SwerveModuleState(states[i].speedMetersPerSecond,
-                                        new Rotation2d(-states[i].angle.getRadians())));
-                    }
-                },
-                swerveDrive);
+    public FollowPath(SwerveDrive swerveDrive, String path, double maxVel, double maxAcceleration,
+                      PIDController forwardPID, PIDController strafePID, ProfiledPIDController rotationPID) {
         this.swerveDrive = swerveDrive;
+
+        this.forwardPID = forwardPID;
+        this.strafePID = strafePID;
+        this.rotationPID = rotationPID;
+
+        target = PathPlanner.loadPath(path, maxVel, maxAcceleration);
+
+        addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
-        super.initialize();
+        hController = new HolonomicDriveController(forwardPID, strafePID, rotationPID);
+        timer.reset();
+        timer.start();
     }
 
     @Override
     public void execute() {
-        super.execute();
+        var curTime = timer.get();
+        PathPlannerTrajectory.PathPlannerState state = (PathPlannerTrajectory.PathPlannerState) target.sample(curTime);
+        Pose2d currentPosition = swerveDrive.getPose();
+        ChassisSpeeds speeds = hController.calculate(currentPosition, state, state.holonomicRotation);
+        swerveDrive.setStates(swerveDrive.getKinematics().toSwerveModuleStates(speeds));
+    }
+
+    @Override
+    public boolean isFinished() {
+        return timer.hasElapsed(target.getTotalTimeSeconds());
     }
 
     @Override
     public void end(boolean interrupted) {
-        super.end(interrupted);
+        timer.stop();
         swerveDrive.terminate();
     }
+
 }
