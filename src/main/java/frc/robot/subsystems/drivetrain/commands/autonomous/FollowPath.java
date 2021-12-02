@@ -39,6 +39,7 @@ public class FollowPath extends CommandBase {
         hController = new HolonomicDriveController(forwardPID, strafePID, rotationPID);
         timer.reset();
         timer.start();
+        swerveDrive.resetOdometry(target.getInitialPose());
     }
 
     @Override
@@ -48,6 +49,9 @@ public class FollowPath extends CommandBase {
         Pose2d currentPosition = swerveDrive.getPose();
         ChassisSpeeds speeds = hController.calculate(currentPosition, state, state.holonomicRotation);
         swerveDrive.setStates(swerveDrive.getKinematics().toSwerveModuleStates(speeds));
+        System.out.println(speeds);
+        System.out.println(target.getTotalTimeSeconds());
+        System.out.println(swerveDrive.getPose());
     }
 
     @Override

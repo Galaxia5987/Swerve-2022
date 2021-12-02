@@ -1,6 +1,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
@@ -52,7 +53,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {923, 492, 986, 318}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {932, 499, 336, 367}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
@@ -120,6 +121,13 @@ public final class Constants {
             this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
             this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
         }
+    }
+
+    public static class Autonomous {
+        public static final double kPThetaController = 1;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(Math.toRadians(30), Math.toRadians(15));
+        public static final double kPXController = 1.2;
+        public static final double kPYController = 1.2;
     }
 
 }

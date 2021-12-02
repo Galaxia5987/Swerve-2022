@@ -13,19 +13,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
+import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
 public class SwerveDrive extends SubsystemBase {
-    private static final SwerveDrive INSTANCE = new SwerveDrive(true);
     private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
     private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            new Translation2d(signX[0] * Rx, signY[0] * Ry),
-            new Translation2d(signX[1] * Rx, signY[1] * Ry),
-            new Translation2d(signX[2] * Rx, signY[2] * Ry),
-            new Translation2d(signX[3] * Rx, signY[3] * Ry)
+            new Translation2d(signX[0] * Rx, -signY[0] * Ry),
+            new Translation2d(signX[1] * Rx, -signY[1] * Ry),
+            new Translation2d(signX[2] * Rx, -signY[2] * Ry),
+            new Translation2d(signX[3] * Rx, -signY[3] * Ry)
     );
     private final SwerveModule[] modules = new SwerveModule[4];
 
@@ -35,8 +35,10 @@ public class SwerveDrive extends SubsystemBase {
             Rotation2d.fromDegrees(angleSupplier.getAsDouble()), new Pose2d()
     );
     private final boolean fieldOriented;
+    private static final SwerveDrive INSTANCE = new SwerveDrive(true);
 
-    private SwerveDrive(boolean fieldOriented) {
+    public SwerveDrive(boolean fieldOriented) {
+        timer.start();
         this.fieldOriented = fieldOriented;
         modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
@@ -80,7 +82,6 @@ public class SwerveDrive extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(angleSupplier.getAsDouble())) :
                 new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-
         setStates(states);
     }
 
@@ -152,7 +153,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[modules.length];
         for (int i = 0; i < modules.length; i++) {
-            swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), new Rotation2d(Math.toRadians(90) - modules[i].getAngle()));
+            swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), new Rotation2d(modules[i].getAngle()));
         }
         odometry.updateWithTime(timer.get(),
                 new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),

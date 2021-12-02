@@ -149,11 +149,12 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle. [rad]
      */
     public void setAngle(double angle) {
-        double targetAngle = -Math.IEEEremainder(angle, 2 * Math.PI);
-        if (Math.abs(angleUnitModel.toTicks(targetAngle - getAngle())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        double currentAngle = getAngle();
+
+        if (Math.abs(angleUnitModel.toTicks(targetAngle - currentAngle)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
             return;
 
-        double currentAngle = getAngle();
         double error = Utils.getTargetError(targetAngle, currentAngle);
         angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
     }

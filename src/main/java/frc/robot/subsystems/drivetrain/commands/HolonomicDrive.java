@@ -27,6 +27,7 @@ public class HolonomicDrive extends CommandBase {
     public void execute() {
         double forward = forwardSupplier.getAsDouble();
         double strafe = strafeSupplier.getAsDouble();
+
         double alpha = Math.atan2(forward, strafe);
         double vector = Math.hypot(forward, strafe);
         forward = Math.sin(alpha) * vector;
@@ -42,7 +43,6 @@ public class HolonomicDrive extends CommandBase {
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
-
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
         } else {

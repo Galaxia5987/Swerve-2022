@@ -5,10 +5,11 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,11 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-    private static final String kDefaultAuto = "Default";
-    private static final String kCustomAuto = "My Auto";
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    private String m_autoSelected;
     public static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    public static boolean debug = true;
+    public static double startAngle;
+    //    private final Compressor compressor = new Compressor(0);
+    public PowerDistributionPanel pdp = new PowerDistributionPanel();
+    private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
 
 
@@ -31,10 +33,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
-        SmartDashboard.putData("Auto choices", m_chooser);
+        navx.reset();
         m_robotContainer = new RobotContainer();
+        startAngle =navx.getYaw();
     }
 
     /**
@@ -46,6 +47,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+
     }
 
     /**
@@ -61,9 +64,14 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_robotContainer.autoInit();
-        m_autoSelected = m_chooser.getSelected();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        // schedule the autonomous command (example)
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+//        FalconDashboard.INSTANCE.setFollowingPath(true);
         // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-        System.out.println("Auto selected: " + m_autoSelected);
     }
 
     /**
@@ -71,15 +79,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        switch (m_autoSelected) {
-            case kCustomAuto:
-                // Put custom auto code here
-                break;
-            case kDefaultAuto:
-            default:
-                // Put default auto code here
-                break;
-        }
     }
 
     /**
@@ -87,6 +86,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
         m_robotContainer.teleopInit();
     }
 
@@ -95,6 +97,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+
     }
 
     /**
@@ -117,6 +120,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+
     }
 
     /**
