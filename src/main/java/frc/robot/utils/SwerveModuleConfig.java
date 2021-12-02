@@ -6,8 +6,8 @@ public class SwerveModuleConfig {
     public final int angleMotorPort;
 
     // inversions
-    public final boolean isDriveMotorInverted;
-    public final boolean isAngleMotorInverted;
+    public final boolean driveMotorInverted;
+    public final boolean angleMotorInverted;
     public final boolean driveMotorSensorPhase;
     public final boolean angleMotorSensorPhase;
 
@@ -36,14 +36,14 @@ public class SwerveModuleConfig {
     public final double encoderTolerance; // [ticks]
 
     public SwerveModuleConfig(int driveMotorPort, int angleMotorPort,
-                              boolean isDriveMotorInverted, boolean isAngleMotorInverted,
+                              boolean driveMotorInverted, boolean angleMotorInverted,
                               boolean driveMotorSensorPhase, boolean angleMotorSensorPhase,
                               double angle_kp, double angle_ki, double angle_kd, double angle_kf,
                               double j, double zeroPosition, CommonSwerveConfig commonConfig) {
         this.driveMotorPort = driveMotorPort;
         this.angleMotorPort = angleMotorPort;
-        this.isDriveMotorInverted = isDriveMotorInverted;
-        this.isAngleMotorInverted = isAngleMotorInverted;
+        this.driveMotorInverted = driveMotorInverted;
+        this.angleMotorInverted = angleMotorInverted;
         this.driveMotorSensorPhase = driveMotorSensorPhase;
         this.angleMotorSensorPhase = angleMotorSensorPhase;
         this.angle_kp = angle_kp;
