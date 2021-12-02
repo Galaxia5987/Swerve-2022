@@ -7,7 +7,6 @@ public class CommonSwerveConfig {
 
     // angle motor
     public final double ticksPerRadian;
-    public final double angleGearRatio;
     public final int allowableAngleError; // [ticks]
 
     // constrains
@@ -17,13 +16,11 @@ public class CommonSwerveConfig {
     public final double encoderTolerance; // [ticks]
 
     public CommonSwerveConfig(double ticksPerMeter, double wheelRadius,
-                              double ticksPerRadian, double angleGearRatio,
+                              double ticksPerRadian, double velocityTolerance,
                               int allowableAngleError, int angleMaxCurrent,
-                              double velocityTolerance, double modelTolerance,
-                              double encoderTolerance) {
+                              double modelTolerance, double encoderTolerance) {
         this.ticksPerMeter = ticksPerMeter;
         this.wheelRadius = wheelRadius;
-        this.angleGearRatio = angleGearRatio;
         this.ticksPerRadian = ticksPerRadian;
         this.allowableAngleError = allowableAngleError;
         this.angleMaxCurrent = angleMaxCurrent;
@@ -39,7 +36,6 @@ public class CommonSwerveConfig {
 
         // angle motor
         private double ticksPerRadian;
-        private double angleGearRatio;
         private int allowableAngleError; // [ticks]
 
         // constrains
@@ -62,11 +58,6 @@ public class CommonSwerveConfig {
             return this;
         }
 
-        public Builder configAngleGearRatio(double angleGearRatio) {
-            this.angleGearRatio = angleGearRatio;
-            return this;
-        }
-
         public Builder configAllowableAngleError(int allowableAngleError) {
             this.allowableAngleError = allowableAngleError;
             return this;
@@ -82,10 +73,9 @@ public class CommonSwerveConfig {
 
         public CommonSwerveConfig build() {
             return new CommonSwerveConfig(ticksPerMeter, wheelRadius,
-                    ticksPerRadian, angleGearRatio,
+                    ticksPerRadian, velocityTolerance,
                     allowableAngleError, angleMaxCurrent,
-                    velocityTolerance, modelTolerance,
-                    encoderTolerance);
+                    modelTolerance, encoderTolerance);
         }
     }
 }

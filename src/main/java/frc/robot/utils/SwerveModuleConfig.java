@@ -27,7 +27,6 @@ public class SwerveModuleConfig {
 
     // angle motor
     public final double ticksPerRadian;
-    public final double angleGearRatio;
     public final int allowableAngleError; // [ticks]
 
     // constrains
@@ -56,7 +55,6 @@ public class SwerveModuleConfig {
         this.ticksPerMeter = commonConfig.ticksPerMeter;
         this.wheelRadius = commonConfig.wheelRadius;
         this.ticksPerRadian = commonConfig.ticksPerRadian;
-        this.angleGearRatio = commonConfig.angleGearRatio;
         this.allowableAngleError = commonConfig.allowableAngleError;
         this.angleMaxCurrent = commonConfig.angleMaxCurrent;
         this.velocityTolerance = commonConfig.velocityTolerance;
