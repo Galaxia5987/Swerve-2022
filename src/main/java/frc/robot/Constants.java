@@ -1,7 +1,6 @@
 package frc.robot;
 
 
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
@@ -38,8 +37,7 @@ public final class Constants {
         public static final CommonSwerveConfig commonConfig = new CommonSwerveConfig.Builder()
                 .configTicksPerUnit(GEAR_RATIO_DRIVE_MOTOR * TICKS_PER_ROTATION_DRIVE_MOTOR / (4 * 0.0254 * Math.PI),
                         GEAR_RATIO_ANGLE_MOTOR * TICKS_PER_ROTATION_ANGLE_MOTOR / (2 * Math.PI))
-                .configConstrains(MAX_CURRENT, VELOCITY_TOLERANCE, MODEL_TOLERANCE, ENCODER_TOLERANCE)
-                .configAllowableAngleError(ALLOWABLE_ANGLE_ERROR)
+                .configConstraints(MAX_CURRENT, VELOCITY_TOLERANCE, MODEL_TOLERANCE, ENCODER_TOLERANCE)
                 .configWheelRadius(WHEEL_RADIUS)
                 .configDriveMotorGearRatio(GEAR_RATIO_DRIVE_MOTOR)
                 .build();

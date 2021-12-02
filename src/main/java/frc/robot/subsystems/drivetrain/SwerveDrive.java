@@ -37,7 +37,6 @@ public class SwerveDrive extends SubsystemBase {
     private final boolean fieldOriented;
 
     private SwerveDrive(boolean fieldOriented) {
-
         this.fieldOriented = fieldOriented;
         modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);

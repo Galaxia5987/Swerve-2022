@@ -7,7 +7,6 @@ public class CommonSwerveConfig {
 
     // angle motor
     public final double ticksPerRadian;
-    public final int allowableAngleError; // [ticks]
 
     // constrains
     public final int angleMaxCurrent; // [amps]
@@ -18,13 +17,11 @@ public class CommonSwerveConfig {
 
     public CommonSwerveConfig(double ticksPerMeter, double wheelRadius,
                               double ticksPerRadian, double velocityTolerance,
-                              int allowableAngleError, int angleMaxCurrent,
-                              double modelTolerance, double encoderTolerance,
-                              double driveMotorGearRatio) {
+                              int angleMaxCurrent, double modelTolerance,
+                              double encoderTolerance, double driveMotorGearRatio) {
         this.ticksPerMeter = ticksPerMeter;
         this.wheelRadius = wheelRadius;
         this.ticksPerRadian = ticksPerRadian;
-        this.allowableAngleError = allowableAngleError;
         this.angleMaxCurrent = angleMaxCurrent;
         this.velocityTolerance = velocityTolerance;
         this.modelTolerance = modelTolerance;
@@ -39,7 +36,6 @@ public class CommonSwerveConfig {
 
         // angle motor
         private double ticksPerRadian;
-        private int allowableAngleError; // [ticks]
 
         // constrains
         private int angleMaxCurrent; // [amps]
@@ -63,17 +59,12 @@ public class CommonSwerveConfig {
             return this;
         }
 
-        public Builder configAllowableAngleError(int allowableAngleError) {
-            this.allowableAngleError = allowableAngleError;
-            return this;
-        }
-
         public Builder configDriveMotorGearRatio(double driveMotorGearRatio) {
             this.driveMotorGearRatio = driveMotorGearRatio;
             return this;
         }
 
-        public Builder configConstrains(int angleMaxCurrent, double velocityTolerance, double modelTolerance, double encoderTolerance) {
+        public Builder configConstraints(int angleMaxCurrent, double velocityTolerance, double modelTolerance, double encoderTolerance) {
             this.angleMaxCurrent = angleMaxCurrent;
             this.velocityTolerance = velocityTolerance;
             this.modelTolerance = modelTolerance;
@@ -83,8 +74,7 @@ public class CommonSwerveConfig {
 
         public CommonSwerveConfig build() {
             return new CommonSwerveConfig(ticksPerMeter, wheelRadius,
-                    ticksPerRadian, velocityTolerance,
-                    allowableAngleError, angleMaxCurrent,
+                    ticksPerRadian, velocityTolerance, angleMaxCurrent,
                     modelTolerance, encoderTolerance, driveMotorGearRatio);
         }
     }
