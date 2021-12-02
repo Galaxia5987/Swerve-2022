@@ -3,12 +3,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.example.ExampleSubsystem;
-import frc.robot.subsystems.example.commands.ExampleCommand;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public ExampleSubsystem exampleSubsystem = ExampleSubsystem.getInstance();
+
   private final XboxController xbox = new XboxController(Ports.Controls.XBOX);
   private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
 
@@ -22,7 +20,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    a.whenPressed(new ExampleCommand(exampleSubsystem));
+
   }
 
   private void configureDefaultCommands() {
