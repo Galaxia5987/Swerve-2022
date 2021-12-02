@@ -57,6 +57,14 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
+     * Gets the kinematics of the swerve.
+     * @return the kinematics of the swerve.
+     */
+    public SwerveDriveKinematics getKinematics() {
+        return kinematics;
+    }
+
+    /**
      * Sets the wheels of the robot to the calculated angle and speed.
      *
      * @param speeds the chassis speeds.
