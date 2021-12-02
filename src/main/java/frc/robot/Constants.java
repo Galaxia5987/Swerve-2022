@@ -1,6 +1,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
 
@@ -82,5 +83,33 @@ public final class Constants {
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
+    }
+
+
+    public enum Motor {
+        TalonFX(12, 4.69, 257, 1.6, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
+        TalonSRX(12, 0.7, 130, 3.8, Units.rotationsPerMinuteToRadiansPerSecond(21020.0)),
+        NEO(12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5657.0)),
+        NEO500(12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(1100));
+
+        public final double nominalVoltage; // [volts]
+        public final double stallTorque; // [N * m]
+        public final double stallCurrent; // [amps]
+        public final double freeCurrent; // [amps]
+        public final double freeSpeed; // [rad/sec]
+        public final double omega; // [ohms]
+        public final double Kv; // [rad/(sec*Volt)]
+        public final double Kt; // [n * m/ amps]
+
+        Motor(double nominalVoltageVolts, double stallTorqueNewtonMeters, double stallCurrentAmps, double freeCurrentAmps, double freeSpeedRadPerSec) {
+            this.nominalVoltage = nominalVoltageVolts;
+            this.stallTorque = stallTorqueNewtonMeters;
+            this.stallCurrent = stallCurrentAmps;
+            this.freeCurrent = freeCurrentAmps;
+            this.freeSpeed = freeSpeedRadPerSec;
+            this.omega = nominalVoltageVolts / stallCurrentAmps;
+            this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
+            this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
+        }
     }
 }
