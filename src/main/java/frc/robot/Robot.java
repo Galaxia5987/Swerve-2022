@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +21,7 @@ public class Robot extends TimedRobot {
     private static final String kCustomAuto = "My Auto";
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     private String m_autoSelected;
+    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
     private RobotContainer m_robotContainer;
 
 
