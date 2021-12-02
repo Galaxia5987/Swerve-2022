@@ -1,6 +1,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
@@ -30,6 +31,9 @@ public final class Constants {
         public static final int ALLOWABLE_ANGLE_ERROR = 3; // [ticks]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
+        public static final double KP_TURN = 0.05;
+        public static final double KI_TURN = 0.02;
+        public static final double KD_TURN = 0;
 
         public static final CommonSwerveConfig commonConfig = new CommonSwerveConfig.Builder()
                 .configTicksPerUnit(GEAR_RATIO_DRIVE_MOTOR * TICKS_PER_ROTATION_DRIVE_MOTOR / (4 * 0.0254 * Math.PI),
@@ -40,6 +44,13 @@ public final class Constants {
                 .configDriveMotorGearRatio(GEAR_RATIO_DRIVE_MOTOR)
                 .build();
 
+        public static final double ROBOT_LENGTH = 0.5924; // [m]
+        public static final double ROBOT_WIDTH = 0.5924; // [m]
+        public static final double JOYSTICK_THRESHOLD = 0.1;
+        public static final double SPEED_MULTIPLIER = 4 / Math.sqrt(2);
+
+        // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
+        public static final double ROTATION_MULTIPLIER = Math.PI;
     }
 
     public static final class SwerveModule {
@@ -111,5 +122,15 @@ public final class Constants {
             this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
             this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
         }
+    }
+
+    public static class Autonomous {
+        public static final double MAX_ACCELERATION = 1;
+        public static final double MAX_VELOCITY = 3;
+        public static final double kPThetaController = 2;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(Math.toRadians(30), Math.toRadians(15));
+        public static final double kPXController = 1.2;
+        public static final double kPYController = 1.2;
+        public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
     }
 }
