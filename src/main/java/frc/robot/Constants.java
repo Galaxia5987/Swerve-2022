@@ -8,8 +8,9 @@ import static frc.robot.Ports.SwerveDrive.*;
 
 public final class Constants {
     public static final double LOOP_PERIOD = 0.02; // [s]
-    public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final int TALON_TIMEOUT = 10; // Waiting period for configurations [ms].
+    public static final double NOMINAL_VOLTAGE = 12; // [volts]
+    public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
 
     public static final class SwerveDrive {
@@ -50,6 +51,7 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[0])
                 .configJ(0.0043)
                 .build();
+
         public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder()
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
@@ -58,6 +60,7 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[1])
                 .configJ(0.0043)
                 .build();
+
         public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder()
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
@@ -66,6 +69,7 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.0043)
                 .build();
+
         public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder()
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
@@ -74,5 +78,8 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.0043)
                 .build();
+
+        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
+        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
     }
 }
