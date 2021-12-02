@@ -1,16 +1,14 @@
 package frc.robot.subsystems.drivetrain.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
 public class TankDrive extends CommandBase {
-    private SwerveDrive swerveDrive;
     private final DoubleSupplier rightVelocity;
     private final DoubleSupplier leftVelocity;
+    private SwerveDrive swerveDrive;
 
     public TankDrive(SwerveDrive swerveDrive, DoubleSupplier rightVelocity, DoubleSupplier leftVelocity) {
         this.swerveDrive = swerveDrive;
