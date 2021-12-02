@@ -124,13 +124,4 @@ public final class Constants {
         }
     }
 
-    public static class Autonomous {
-        public static final double MAX_ACCELERATION = 1;
-        public static final double MAX_VELOCITY = 3;
-        public static final double kPThetaController = 2;
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(Math.toRadians(30), Math.toRadians(15));
-        public static final double kPXController = 1.2;
-        public static final double kPYController = 1.2;
-        public static final double MAX_CENTRIPETAL_ACCELERATION = 1.2;
-    }
 }

@@ -34,14 +34,10 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
             Rotation2d.fromDegrees(angleSupplier.getAsDouble()), new Pose2d()
     );
-
-    private final TrajectoryConfig config = new TrajectoryConfig(Constants.Autonomous.MAX_VELOCITY,
-            Constants.Autonomous.MAX_ACCELERATION)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(kinematics);
     private final boolean fieldOriented;
 
     private SwerveDrive(boolean fieldOriented) {
+
         this.fieldOriented = fieldOriented;
         modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
