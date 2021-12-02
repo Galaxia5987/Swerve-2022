@@ -36,6 +36,7 @@ public final class Constants {
                 .configConstrains(MAX_CURRENT, VELOCITY_TOLERANCE, MODEL_TOLERANCE, ENCODER_TOLERANCE)
                 .configAllowableAngleError(ALLOWABLE_ANGLE_ERROR)
                 .configWheelRadius(WHEEL_RADIUS)
+                .configDriveMotorGearRatio(GEAR_RATIO_DRIVE_MOTOR)
                 .build();
 
     }
@@ -43,7 +44,7 @@ public final class Constants {
     public static final class SwerveModule {
         public static final int[] ZERO_POSITIONS = {923, 492, 986, 318}; // fr, fl, rr, rl
 
-        public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder()
+        public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, DRIVE_SENSOR_PHASE_FR, ANGLE_SENSOR_PHASE_FR)
@@ -52,7 +53,7 @@ public final class Constants {
                 .configJ(0.0043)
                 .build();
 
-        public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder()
+        public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder(1)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, DRIVE_SENSOR_PHASE_FL, ANGLE_SENSOR_PHASE_FL)
@@ -61,7 +62,7 @@ public final class Constants {
                 .configJ(0.0043)
                 .build();
 
-        public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder()
+        public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder(2)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, DRIVE_SENSOR_PHASE_RR, ANGLE_SENSOR_PHASE_RR)
@@ -70,7 +71,7 @@ public final class Constants {
                 .configJ(0.0043)
                 .build();
 
-        public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder()
+        public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder(3)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, DRIVE_SENSOR_PHASE_RL, ANGLE_SENSOR_PHASE_RL)

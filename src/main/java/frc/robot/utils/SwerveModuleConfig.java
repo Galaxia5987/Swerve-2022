@@ -1,6 +1,8 @@
 package frc.robot.utils;
 
 public class SwerveModuleConfig {
+    public final int wheel;
+
     // ports
     public final int driveMotorPort;
     public final int angleMotorPort;
@@ -34,12 +36,14 @@ public class SwerveModuleConfig {
     public final double velocityTolerance; // [RPS]
     public final double modelTolerance;
     public final double encoderTolerance; // [ticks]
+    public final double driveMotorGearRatio;
 
-    public SwerveModuleConfig(int driveMotorPort, int angleMotorPort,
+    public SwerveModuleConfig(int wheel, int driveMotorPort, int angleMotorPort,
                               boolean driveMotorInverted, boolean angleMotorInverted,
                               boolean driveMotorSensorPhase, boolean angleMotorSensorPhase,
                               double angle_kp, double angle_ki, double angle_kd, double angle_kf,
                               double j, double zeroPosition, CommonSwerveConfig commonConfig) {
+        this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
         this.angleMotorPort = angleMotorPort;
         this.driveMotorInverted = driveMotorInverted;
@@ -60,6 +64,7 @@ public class SwerveModuleConfig {
         this.velocityTolerance = commonConfig.velocityTolerance;
         this.modelTolerance = commonConfig.modelTolerance;
         this.encoderTolerance = commonConfig.encoderTolerance;
+        this.driveMotorGearRatio = commonConfig.driveMotorGearRatio;
     }
 
     public static final class Builder {
@@ -79,8 +84,10 @@ public class SwerveModuleConfig {
         private double angle_kd;
         private double angle_kf;
         private double j; // moment of inertia
+        private final int wheel;
 
-        public Builder() {
+        public Builder(int wheel) {
+            this.wheel = wheel;
         }
 
         public Builder configZeroPosition(int zeroPosition) {
@@ -123,7 +130,7 @@ public class SwerveModuleConfig {
         }
 
         public SwerveModuleConfig build() {
-            return new SwerveModuleConfig(driveMotorPort, angleMotorPort,
+            return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
                     driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
                     angle_kp, angle_ki, angle_kd, angle_kf,
                     j, zeroPosition, commonConfig);

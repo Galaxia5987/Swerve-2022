@@ -14,11 +14,13 @@ public class CommonSwerveConfig {
     public final double velocityTolerance; // [RPS]
     public final double modelTolerance;
     public final double encoderTolerance; // [ticks]
+    public final double driveMotorGearRatio;
 
     public CommonSwerveConfig(double ticksPerMeter, double wheelRadius,
                               double ticksPerRadian, double velocityTolerance,
                               int allowableAngleError, int angleMaxCurrent,
-                              double modelTolerance, double encoderTolerance) {
+                              double modelTolerance, double encoderTolerance,
+                              double driveMotorGearRatio) {
         this.ticksPerMeter = ticksPerMeter;
         this.wheelRadius = wheelRadius;
         this.ticksPerRadian = ticksPerRadian;
@@ -27,6 +29,7 @@ public class CommonSwerveConfig {
         this.velocityTolerance = velocityTolerance;
         this.modelTolerance = modelTolerance;
         this.encoderTolerance = encoderTolerance;
+        this.driveMotorGearRatio = driveMotorGearRatio;
     }
 
     public static final class Builder {
@@ -43,6 +46,8 @@ public class CommonSwerveConfig {
         private double velocityTolerance; // [RPS]
         private double modelTolerance;
         private double encoderTolerance; // [ticks]
+        public double driveMotorGearRatio;
+
 
         public Builder() {
         }
@@ -63,6 +68,11 @@ public class CommonSwerveConfig {
             return this;
         }
 
+        public Builder configDriveMotorGearRatio(double driveMotorGearRatio) {
+            this.driveMotorGearRatio = driveMotorGearRatio;
+            return this;
+        }
+
         public Builder configConstrains(int angleMaxCurrent, double velocityTolerance, double modelTolerance, double encoderTolerance) {
             this.angleMaxCurrent = angleMaxCurrent;
             this.velocityTolerance = velocityTolerance;
@@ -75,7 +85,7 @@ public class CommonSwerveConfig {
             return new CommonSwerveConfig(ticksPerMeter, wheelRadius,
                     ticksPerRadian, velocityTolerance,
                     allowableAngleError, angleMaxCurrent,
-                    modelTolerance, encoderTolerance);
+                    modelTolerance, encoderTolerance, driveMotorGearRatio);
         }
     }
 }
