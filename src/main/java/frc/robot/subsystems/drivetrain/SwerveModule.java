@@ -149,7 +149,7 @@ public class SwerveModule extends SubsystemBase {
      * @param angle the target angle. [rad]
      */
     public void setAngle(double angle) {
-        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        double targetAngle = -Math.IEEEremainder(angle, 2 * Math.PI);
         if (Math.abs(angleUnitModel.toTicks(targetAngle - getAngle())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
             return;
 
