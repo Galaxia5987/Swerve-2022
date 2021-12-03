@@ -1,9 +1,11 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.utils.Utils;
 
@@ -42,7 +44,15 @@ public class FineTunedDrive extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        swerveDrive.resetOdometry();
+    }
+
+    @Override
     public void execute() {
+        Pose2d currentPosition = swerveDrive.getPose();
+//        System.out.println(Robot.navx.getYaw());
+//        System.out.println(currentPosition);
         double forward = forwardSupplier.getAsDouble();
         double strafe = strafeSupplier.getAsDouble();
         double rotation = rotationSupplier.getAsDouble();
@@ -52,10 +62,14 @@ public class FineTunedDrive extends CommandBase {
         if (Math.abs(rotation) < 0.1) rotation = 0;
         vector = vector < 0 ? -Math.pow(vector, 2) : Math.pow(vector, 2);
         double checking_vector = vector;
-        vector *= Constants.SwerveDrive.SPEED_MULTIPLIER * 0.35;
-        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER * 0.75;
+        vector *= Constants.SwerveDrive.SPEED_MULTIPLIER * 2;
+        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
+
+        if (RobotContainer.xbox.getBButton()) {
+            swerveDrive.resetOdometry();
+        }
 
         if (Utils.isPaused(forward, strafe, rotation)) {
             swerveDrive.terminate();

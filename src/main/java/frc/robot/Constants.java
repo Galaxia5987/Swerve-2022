@@ -53,7 +53,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {932, 499, 336, 367}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {948, 480, 314, 348}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
@@ -124,10 +124,10 @@ public final class Constants {
     }
 
     public static class Autonomous {
-        public static final double kPThetaController = 1;
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(Math.toRadians(30), Math.toRadians(15));
-        public static final double kPXController = 1.2;
-        public static final double kPYController = 1.2;
+        public static final double kPThetaController = 12;
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
+        public static final double kPXController = 8;
+        public static final double kPYController = 10;
     }
 
 }

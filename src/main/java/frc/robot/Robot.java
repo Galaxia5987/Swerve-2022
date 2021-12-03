@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         navx.reset();
         m_robotContainer = new RobotContainer();
-        startAngle =navx.getYaw();
+        startAngle = navx.getYaw();
     }
 
     /**

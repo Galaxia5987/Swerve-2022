@@ -55,6 +55,7 @@ public class SwerveDrive extends SubsystemBase {
 
     /**
      * Gets the kinematics of the swerve.
+     *
      * @return the kinematics of the swerve.
      */
     public SwerveDriveKinematics getKinematics() {
@@ -127,7 +128,7 @@ public class SwerveDrive extends SubsystemBase {
      * Resets the odometry.
      */
     public void resetOdometry() {
-        resetOdometry(new Pose2d());
+        odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
     }
 
     /**
@@ -135,8 +136,9 @@ public class SwerveDrive extends SubsystemBase {
      *
      * @param pose the current pose.
      */
-    public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(pose, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
+    public void resetOdometry(Pose2d pose, double holonomicRotation) {
+        odometry.resetPosition(new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(holonomicRotation)), Rotation2d.fromDegrees(holonomicRotation));
+        ;
     }
 
     /**
@@ -156,7 +158,7 @@ public class SwerveDrive extends SubsystemBase {
             swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), new Rotation2d(modules[i].getAngle()));
         }
         odometry.updateWithTime(timer.get(),
-                new Rotation2d(Math.toRadians(-Robot.navx.getYaw())),
+                new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
                 swerveModuleState
         );
     }

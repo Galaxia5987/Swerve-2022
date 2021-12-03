@@ -211,9 +211,9 @@ public class SwerveModule extends SubsystemBase {
     public void setEncoderRelative(boolean reset) {
         startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
-        if (reset) {
-            resetAngleMotor();
-        }
+//        if (reset) {
+        resetAngleMotor();
+//        }
     }
 
     /**
