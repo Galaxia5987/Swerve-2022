@@ -44,7 +44,6 @@ public class SwerveModule extends SubsystemBase {
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
-
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
         // inversions
@@ -121,8 +120,6 @@ public class SwerveModule extends SubsystemBase {
      * @return the speed of the wheel. [m/s]
      */
     public double getVelocity() {
-        if (config.wheel != 1)
-            return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(1));
         return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
     }
 
@@ -160,13 +157,11 @@ public class SwerveModule extends SubsystemBase {
     public void setAngle(double angle) {
         double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
         double currentAngle = getAngle();
-
-        if (Math.abs(angleUnitModel.toTicks(targetAngle - currentAngle)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
-            return;
-
         double error = Utils.getTargetError(targetAngle, currentAngle);
-//        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
-        angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
+
+        if (Math.abs(error) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
+            return;
+        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
     }
 
     /**
@@ -219,9 +214,10 @@ public class SwerveModule extends SubsystemBase {
      * Change the mode of the encoder of the angle motor to relative.
      */
     public void setEncoderRelative(boolean reset) {
-        startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
+        if (reset)
+            startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
-        resetAngleMotor();
+        if (reset) resetAngleMotor();
     }
 
     /**
@@ -229,7 +225,6 @@ public class SwerveModule extends SubsystemBase {
      */
     public void resetAngleMotor() {
         angleMotor.setSelectedSensorPosition(0);
-
     }
 
     public void setNeutralMode(NeutralMode neutralMode) {

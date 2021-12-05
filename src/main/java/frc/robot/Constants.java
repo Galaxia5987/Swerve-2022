@@ -28,7 +28,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 4;
         public static final double ENCODER_TOLERANCE = 4; // [ticks]
 
-        public static final int ALLOWABLE_ANGLE_ERROR = 3; // [ticks]
+        public static final double ALLOWABLE_ANGLE_ERROR = 3 * Math.PI / 180; // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
         public static final double KP_TURN = 0.05;
