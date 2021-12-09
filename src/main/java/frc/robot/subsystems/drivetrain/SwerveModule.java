@@ -84,6 +84,15 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.setSelectedSensorPosition(0);
+
+        angleMotor.configMotionAcceleration(2000);
+        angleMotor.configMotionCruiseVelocity(4000);
+        angleMotor.configMotionSCurveStrength(4);
+
+        if (config.wheel == 3) {
+            angleMotor.configMotionAcceleration(1000);
+            angleMotor.configMotionCruiseVelocity(1000);
+        }
     }
 
     /**
@@ -156,7 +165,8 @@ public class SwerveModule extends SubsystemBase {
             return;
 
         double error = Utils.getTargetError(targetAngle, currentAngle);
-        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
+//        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
+        angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
     }
 
     /**
@@ -211,9 +221,7 @@ public class SwerveModule extends SubsystemBase {
     public void setEncoderRelative(boolean reset) {
         startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
         angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
-//        if (reset) {
         resetAngleMotor();
-//        }
     }
 
     /**
@@ -222,6 +230,10 @@ public class SwerveModule extends SubsystemBase {
     public void resetAngleMotor() {
         angleMotor.setSelectedSensorPosition(0);
 
+    }
+
+    public void setNeutralMode(NeutralMode neutralMode) {
+        driveMotor.setNeutralMode(neutralMode);
     }
 
 

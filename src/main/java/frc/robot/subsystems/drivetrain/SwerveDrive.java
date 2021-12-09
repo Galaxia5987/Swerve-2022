@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -8,12 +9,10 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 
 public class SwerveDrive extends SubsystemBase {
@@ -21,6 +20,7 @@ public class SwerveDrive extends SubsystemBase {
     private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
+    private static final SwerveDrive INSTANCE = new SwerveDrive(true);
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             new Translation2d(signX[0] * Rx, -signY[0] * Ry),
             new Translation2d(signX[1] * Rx, -signY[1] * Ry),
@@ -28,14 +28,12 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, -signY[3] * Ry)
     );
     private final SwerveModule[] modules = new SwerveModule[4];
-
     private final Timer timer = new Timer();
     private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
             Rotation2d.fromDegrees(angleSupplier.getAsDouble()), new Pose2d()
     );
     private final boolean fieldOriented;
-    private static final SwerveDrive INSTANCE = new SwerveDrive(true);
 
     public SwerveDrive(boolean fieldOriented) {
         timer.start();
@@ -148,6 +146,12 @@ public class SwerveDrive extends SubsystemBase {
         for (var module : modules) {
             module.stopDriveMotor();
             module.stopAngleMotor();
+        }
+    }
+
+    public void setNeutralMode(NeutralMode neutralMode) {
+        for (int i = 0; i < 4; i++) {
+            modules[i].setNeutralMode(neutralMode);
         }
     }
 

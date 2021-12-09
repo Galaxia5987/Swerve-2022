@@ -62,8 +62,8 @@ public class FineTunedDrive extends CommandBase {
         if (Math.abs(rotation) < 0.1) rotation = 0;
         vector = vector < 0 ? -Math.pow(vector, 2) : Math.pow(vector, 2);
         double checking_vector = vector;
-        vector *= Constants.SwerveDrive.SPEED_MULTIPLIER * 2;
-        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
+        vector *= Constants.SwerveDrive.SPEED_MULTIPLIER;
+        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER * 2;
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
