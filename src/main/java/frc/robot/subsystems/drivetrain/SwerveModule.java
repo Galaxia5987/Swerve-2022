@@ -154,13 +154,15 @@ public class SwerveModule extends SubsystemBase {
      *
      * @param angle the target angle.
      */
-    public void setAngle(Rotation2d angle) {
-        var currentAngle = getAngle();
-        var error = angle.minus(currentAngle);
-        if (Math.abs(angleUnitModel.toTicks(error.getRadians())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
+    public void setAngle(double angle) {
+        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
+        double currentAngle = getAngle();
+
+        if (Math.abs(angleUnitModel.toTicks(targetAngle - currentAngle)) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
             return;
 
-        angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error.getRadians()));
+        double error = Utils.getTargetError(targetAngle, currentAngle);
+        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
     }
 
     /**
@@ -203,14 +205,29 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
+     * Change the mode of the encoder of the angle motor to absolute.
+     */
+    public void setEncoderAbsolute() {
+        angleMotor.configFeedbackNotContinuous(true, Constants.TALON_TIMEOUT);
+    }
+
+    /**
+     * Change the mode of the encoder of the angle motor to relative.
+     */
+    public void setEncoderRelative(boolean reset) {
+        startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
+        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
+//        if (reset) {
+        resetAngleMotor();
+//        }
+    }
+
+    /**
      * Resets the angle motor encoder position back to 0.
      */
     public void resetAngleMotor() {
         angleMotor.setSelectedSensorPosition(0);
-    }
 
-    public void setNeutralMode(NeutralMode neutralMode) {
-        driveMotor.setNeutralMode(neutralMode);
     }
 
     @Override
