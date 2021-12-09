@@ -23,6 +23,11 @@ public class SwerveModuleConfig {
 
     public final double zeroPosition; // [ticks]
 
+    // Motion Magic
+    public final int motionAcceleration;
+    public final int motionCruseVelocity;
+    public final int curveStrength;
+
     // drive motor
     public final double ticksPerMeter;
     public final double wheelRadius; // [m]
@@ -41,7 +46,7 @@ public class SwerveModuleConfig {
                               boolean driveMotorInverted, boolean angleMotorInverted,
                               boolean driveMotorSensorPhase, boolean angleMotorSensorPhase,
                               double angle_kp, double angle_ki, double angle_kd, double angle_kf,
-                              double j, double zeroPosition, CommonSwerveConfig commonConfig) {
+                              double j, double zeroPosition, int motionAcceleration, int motionCruseVelocity, int curveStrength, CommonSwerveConfig commonConfig) {
         this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
         this.angleMotorPort = angleMotorPort;
@@ -55,6 +60,9 @@ public class SwerveModuleConfig {
         this.angle_kf = angle_kf;
         this.j = j;
         this.zeroPosition = zeroPosition;
+        this.motionAcceleration = motionAcceleration;
+        this.motionCruseVelocity = motionAcceleration;
+        this.curveStrength = curveStrength;
         this.ticksPerMeter = commonConfig.ticksPerMeter;
         this.wheelRadius = commonConfig.wheelRadius;
         this.ticksPerRadian = commonConfig.ticksPerRadian;
@@ -66,6 +74,7 @@ public class SwerveModuleConfig {
     }
 
     public static final class Builder {
+        private final int wheel;
         private CommonSwerveConfig commonConfig;
         private int zeroPosition;
         // ports
@@ -82,7 +91,10 @@ public class SwerveModuleConfig {
         private double angle_kd;
         private double angle_kf;
         private double j; // moment of inertia
-        private final int wheel;
+        // Motion Magic
+        private int motionAcceleration;
+        private int motionCruseVelocity;
+        private int curveStrength;
 
         public Builder(int wheel) {
             this.wheel = wheel;
@@ -127,11 +139,19 @@ public class SwerveModuleConfig {
             return this;
         }
 
+        public Builder configMotionMagic(int motionAcceleration, int motionCruseVelocity, int curveStrength) {
+            this.motionAcceleration = motionAcceleration;
+            this.motionCruseVelocity = motionCruseVelocity;
+            this.curveStrength = curveStrength;
+            return this;
+        }
+
+
         public SwerveModuleConfig build() {
             return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
                     driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
                     angle_kp, angle_ki, angle_kd, angle_kf,
-                    j, zeroPosition, commonConfig);
+                    j, zeroPosition, motionAcceleration, motionCruseVelocity, curveStrength, commonConfig);
         }
     }
 }

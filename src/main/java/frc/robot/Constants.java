@@ -15,6 +15,33 @@ public final class Constants {
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
 
+    public enum Motor {
+        TalonFX(12, 4.69, 257, 1.6, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
+        TalonSRX(12, 0.7, 130, 3.8, Units.rotationsPerMinuteToRadiansPerSecond(21020.0)),
+        NEO(12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5657.0)),
+        NEO500(12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(1100));
+
+        public final double nominalVoltage; // [volts]
+        public final double stallTorque; // [N * m]
+        public final double stallCurrent; // [amps]
+        public final double freeCurrent; // [amps]
+        public final double freeSpeed; // [rad/sec]
+        public final double omega; // [ohms]
+        public final double Kv; // [rad/(sec*Volt)]
+        public final double Kt; // [n * m/ amps]
+
+        Motor(double nominalVoltageVolts, double stallTorqueNewtonMeters, double stallCurrentAmps, double freeCurrentAmps, double freeSpeedRadPerSec) {
+            this.nominalVoltage = nominalVoltageVolts;
+            this.stallTorque = stallTorqueNewtonMeters;
+            this.stallCurrent = stallCurrentAmps;
+            this.freeCurrent = freeCurrentAmps;
+            this.freeSpeed = freeSpeedRadPerSec;
+            this.omega = nominalVoltageVolts / stallCurrentAmps;
+            this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
+            this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
+        }
+    }
+
     public static final class SwerveDrive {
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
@@ -53,7 +80,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {948, 480, 314, 348}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {929, -518, 314, 295}; // fr, fl, rr, rl
 
         public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
@@ -62,6 +89,7 @@ public final class Constants {
                 .configAnglePID(4.5, 0.0045, 1, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
                 .configJ(0.0043)
+                .configMotionMagic(2000, 4000, 4)
                 .build();
 
         public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder(1)
@@ -71,6 +99,7 @@ public final class Constants {
                 .configAnglePID(4, 0.0045, 3, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
                 .configJ(0.0043)
+                .configMotionMagic(2000, 4000, 4)
                 .build();
 
         public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder(2)
@@ -80,6 +109,7 @@ public final class Constants {
                 .configAnglePID(4.35, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[2])
                 .configJ(0.0043)
+                .configMotionMagic(2000, 4000, 4)
                 .build();
 
         public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder(3)
@@ -89,38 +119,11 @@ public final class Constants {
                 .configAnglePID(4.5, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.0043)
+                .configMotionMagic(1000, 1000, 4)
                 .build();
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-    }
-
-
-    public enum Motor {
-        TalonFX(12, 4.69, 257, 1.6, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
-        TalonSRX(12, 0.7, 130, 3.8, Units.rotationsPerMinuteToRadiansPerSecond(21020.0)),
-        NEO(12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5657.0)),
-        NEO500(12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(1100));
-
-        public final double nominalVoltage; // [volts]
-        public final double stallTorque; // [N * m]
-        public final double stallCurrent; // [amps]
-        public final double freeCurrent; // [amps]
-        public final double freeSpeed; // [rad/sec]
-        public final double omega; // [ohms]
-        public final double Kv; // [rad/(sec*Volt)]
-        public final double Kt; // [n * m/ amps]
-
-        Motor(double nominalVoltageVolts, double stallTorqueNewtonMeters, double stallCurrentAmps, double freeCurrentAmps, double freeSpeedRadPerSec) {
-            this.nominalVoltage = nominalVoltageVolts;
-            this.stallTorque = stallTorqueNewtonMeters;
-            this.stallCurrent = stallCurrentAmps;
-            this.freeCurrent = freeCurrentAmps;
-            this.freeSpeed = freeSpeedRadPerSec;
-            this.omega = nominalVoltageVolts / stallCurrentAmps;
-            this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
-            this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
-        }
     }
 
     public static class Autonomous {
