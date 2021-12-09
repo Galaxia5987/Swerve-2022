@@ -31,10 +31,10 @@ public class Rotate extends CommandBase {
         swerveDrive.getModule(2).setAngle(Math.toRadians(target0.get()));
         swerveDrive.getModule(3).setAngle(Math.toRadians(target0.get()));
 */
-        SmartDashboard.putNumber("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
-        SmartDashboard.putNumber("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));
-        SmartDashboard.putNumber("module RR", Math.toDegrees(swerveDrive.getModule(2).getAngle()));
-        SmartDashboard.putNumber("module RL", Math.toDegrees(swerveDrive.getModule(3).getAngle()));
+        SmartDashboard.putNumber("module FR", swerveDrive.getModule(0).getAngle().getDegrees());
+        SmartDashboard.putNumber("module FL", swerveDrive.getModule(1).getAngle().getDegrees());
+        SmartDashboard.putNumber("module RR", swerveDrive.getModule(2).getAngle().getDegrees());
+        SmartDashboard.putNumber("module RL", swerveDrive.getModule(3).getAngle().getDegrees());
 /*        FireLog.log("angle-setpoint", target0.get());
         FireLog.log("module FR", Math.toDegrees(swerveDrive.getModule(0).getAngle()));
         FireLog.log("module FL", Math.toDegrees(swerveDrive.getModule(1).getAngle()));

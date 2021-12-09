@@ -21,7 +21,6 @@ import frc.robot.Constants;
 import frc.robot.UnitModel;
 import frc.robot.utils.StateSpaceUtils;
 import frc.robot.utils.SwerveModuleConfig;
-import frc.robot.utils.Utils;
 
 public class SwerveModule extends SubsystemBase {
     private final WPI_TalonFX driveMotor;
@@ -31,7 +30,6 @@ public class SwerveModule extends SubsystemBase {
 
     private final SwerveModuleConfig config;
     private final Timer timer = new Timer();
-    private double startAngle = 0;
     private LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
 
@@ -145,30 +143,29 @@ public class SwerveModule extends SubsystemBase {
     /**
      * @return the angle of the wheel. [rad]
      */
-    public double getAngle() {
-        return Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition()) + startAngle, 2 * Math.PI);
+    public Rotation2d getAngle() {
+        return new Rotation2d(Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI));
     }
 
     /**
      * Sets the angle of the wheel, in consideration of the shortest path to the target angle.
      *
-     * @param angle the target angle. [rad]
+     * @param angle the target angle.
      */
-    public void setAngle(double angle) {
-        double targetAngle = Math.IEEEremainder(angle, 2 * Math.PI);
-        double currentAngle = getAngle();
-        double error = Utils.getTargetError(targetAngle, currentAngle);
-
-        if (Math.abs(error) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
+    public void setAngle(Rotation2d angle) {
+        var currentAngle = getAngle();
+        var error = angle.minus(currentAngle);
+        if (Math.abs(angleUnitModel.toTicks(error.getRadians())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
             return;
-        angleMotor.set(ControlMode.Position, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error));
+
+        angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error.getRadians()));
     }
 
     /**
      * @return the current state of the module.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getVelocity(), new Rotation2d(getAngle()));
+        return new SwerveModuleState(getVelocity(), getAngle());
     }
 
     /**
@@ -178,7 +175,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setState(SwerveModuleState state) {
         setVelocity(state.speedMetersPerSecond);
-        setAngle(state.angle.getRadians());
+        setAngle(state.angle);
     }
 
     /**

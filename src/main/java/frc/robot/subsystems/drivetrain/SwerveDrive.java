@@ -91,7 +91,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void setStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
-            states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(getModule(i).getAngle()));
+            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
             getModule(i).setState(states[i]);
         }
     }
@@ -99,7 +99,7 @@ public class SwerveDrive extends SubsystemBase {
     public ChassisSpeeds getChassisSpeeds() {
         SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++)
-            swerveModuleStates[i] = new SwerveModuleState(getModule(i).getVelocity(), new Rotation2d(getModule(i).getAngle()));
+            swerveModuleStates[i] = new SwerveModuleState(getModule(i).getVelocity(), getModule(i).getAngle());
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
         return chassisSpeeds;
@@ -159,7 +159,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[modules.length];
         for (int i = 0; i < modules.length; i++) {
-            swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), new Rotation2d(modules[i].getAngle()));
+            swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), modules[i].getAngle());
         }
         odometry.updateWithTime(timer.get(),
                 new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
