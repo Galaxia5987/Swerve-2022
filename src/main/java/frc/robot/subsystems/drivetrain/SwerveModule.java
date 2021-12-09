@@ -84,9 +84,9 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.setSelectedSensorPosition(0);
 
-        angleMotor.configMotionAcceleration(2000);
-        angleMotor.configMotionCruiseVelocity(4000);
-        angleMotor.configMotionSCurveStrength(4);
+        angleMotor.configMotionAcceleration(config.motionAcceleration);
+        angleMotor.configMotionCruiseVelocity(config.motionCruseVelocity);
+        angleMotor.configMotionSCurveStrength(config.curveStrength);
 
         if (config.wheel == 3) {
             angleMotor.configMotionAcceleration(1000);
@@ -230,7 +230,6 @@ public class SwerveModule extends SubsystemBase {
     public void setNeutralMode(NeutralMode neutralMode) {
         driveMotor.setNeutralMode(neutralMode);
     }
-
 
     @Override
     public void periodic() {
