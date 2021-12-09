@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
-import frc.robot.subsystems.drivetrain.commands.fun.MobileJoystickDrive;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
@@ -56,25 +55,5 @@ public class RobotContainer {
                 new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
                     enableContinuousInput(-Math.PI, Math.PI);
                 }});
-    }
-
-    public void teleopInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
-        }
-        hasSwerveEncoderReset = true;
-    }
-
-    public void autoInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
-        }
-        hasSwerveEncoderReset = true;
-    }
-
-    public void disableInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderAbsolute();
-        }
     }
 }
