@@ -35,16 +35,16 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
-                () -> -xbox.getY(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kRight)
-        ));
-//        swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
+//        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
 //                () -> -xbox.getY(GenericHID.Hand.kLeft),
 //                () -> xbox.getX(GenericHID.Hand.kLeft),
 //                () -> xbox.getX(GenericHID.Hand.kRight)
 //        ));
+        swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
+                () -> -xbox.getY(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kRight)
+        ));
     }
 
 

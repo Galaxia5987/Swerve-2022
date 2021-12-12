@@ -13,15 +13,13 @@ import java.util.function.DoubleSupplier;
 
 public class DampedDrive extends CommandBase {
 
-    private static final SlewRateLimiter vxFilter = new SlewRateLimiter(0.5);
-    private static final SlewRateLimiter vyFilter = new SlewRateLimiter(0.5);
-    private static final PIDController omegaController = new PIDController(0, 0, 0); // important to add ki
+    private static final SlewRateLimiter vxFilter = new SlewRateLimiter(16);
+    private static final SlewRateLimiter vyFilter = new SlewRateLimiter(16);
+    private static final PIDController thetaController = new PIDController(0.1, 0, 0); // important to add ki
     private final DoubleSupplier forwardSupplier;
     private final DoubleSupplier strafeSupplier;
     private final DoubleSupplier rotationSupplier;
-    private double lastAngle;
-    private double lastTime;
-    private Timer timer = new Timer();
+    private double storedYaw;
     private final SwerveDrive swerve;
 
     public DampedDrive(SwerveDrive swerve, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
@@ -34,16 +32,12 @@ public class DampedDrive extends CommandBase {
 
     @Override
     public void initialize() {
-        lastAngle = Robot.navx.getYaw();
-        lastTime = 0;
-        timer.reset();
-        timer.start();
     }
 
     @Override
     public void execute() {
-        double forward = vxFilter.calculate(forwardSupplier.getAsDouble());
-        double strafe = vyFilter.calculate(strafeSupplier.getAsDouble());
+        double forward = forwardSupplier.getAsDouble();
+        double strafe = strafeSupplier.getAsDouble();
 
         double alpha = Math.atan2(forward, strafe);
         double vector = Math.hypot(forward, strafe);
@@ -53,22 +47,24 @@ public class DampedDrive extends CommandBase {
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
-        double rotationSetpoint = Utils.joystickDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        rotationSetpoint = Utils.outerDeadzone(rotationSetpoint, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
+        double rotation = Utils.joystickDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        rotation = Utils.outerDeadzone(rotation, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
         strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        rotationSetpoint *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
+        rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
-        double currentAngle = Robot.navx.getYaw();
-        double currentTime = timer.get();
+        forward = vxFilter.calculate(forward);
+        strafe = vyFilter.calculate(strafe);
 
-        double rotation = omegaController.calculate(Math.toRadians(currentAngle - lastAngle) / (currentTime - lastTime), rotationSetpoint);
+        if (rotation != 0)
+            storedYaw = Robot.navx.getYaw();
+        else if (forward != 0 || strafe != 0) {
+            rotation = thetaController.calculate(Robot.navx.getYaw(), storedYaw);
+        }
 
         swerve.holonomicDrive(forward, strafe, rotation);
-        lastAngle = currentAngle;
-        lastTime = currentTime;
     }
 
     @Override
@@ -78,6 +74,5 @@ public class DampedDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        timer.stop();
     }
 }
