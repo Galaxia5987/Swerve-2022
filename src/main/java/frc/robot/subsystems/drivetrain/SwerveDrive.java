@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -35,6 +34,7 @@ public class SwerveDrive extends SubsystemBase {
     );
     private final boolean fieldOriented;
 
+
     public SwerveDrive(boolean fieldOriented) {
         timer.start();
         this.fieldOriented = fieldOriented;
@@ -67,6 +67,12 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(ChassisSpeeds speeds) {
         holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    }
+
+    public void setRotation(double rotation) {
+        holonomicDrive(getChassisSpeeds().vxMetersPerSecond,
+                       getChassisSpeeds().vyMetersPerSecond,
+                       rotation);
     }
 
     /**
@@ -136,7 +142,6 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose, double holonomicRotation) {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(holonomicRotation)), Rotation2d.fromDegrees(holonomicRotation));
-        ;
     }
 
     /**
@@ -146,12 +151,6 @@ public class SwerveDrive extends SubsystemBase {
         for (var module : modules) {
             module.stopDriveMotor();
             module.stopAngleMotor();
-        }
-    }
-
-    public void setNeutralMode(NeutralMode neutralMode) {
-        for (int i = 0; i < 4; i++) {
-            modules[i].setNeutralMode(neutralMode);
         }
     }
 
