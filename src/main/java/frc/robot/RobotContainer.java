@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.drivetrain.commands.DampedDrive;
 import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
 
@@ -39,6 +40,11 @@ public class RobotContainer {
                 () -> xbox.getX(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kRight)
         ));
+//        swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
+//                () -> -xbox.getY(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kRight)
+//        ));
     }
 
 
@@ -55,5 +61,25 @@ public class RobotContainer {
                 new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
                     enableContinuousInput(-Math.PI, Math.PI);
                 }});
+    }
+
+    public void teleopInit() {
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
+        }
+        hasSwerveEncoderReset = true;
+    }
+
+    public void autoInit() {
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
+        }
+        hasSwerveEncoderReset = true;
+    }
+
+    public void disableInit() {
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setEncoderAbsolute();
+        }
     }
 }

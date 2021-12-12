@@ -32,6 +32,7 @@ public class SwerveModule extends SubsystemBase {
     private final Timer timer = new Timer();
     private LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
+    private double startAngle = 0;
 
     public SwerveModule(SwerveModuleConfig config) {
         this.config = config;
@@ -42,7 +43,6 @@ public class SwerveModule extends SubsystemBase {
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
-        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -200,6 +200,23 @@ public class SwerveModule extends SubsystemBase {
     public void setMaxOutput() {
         angleMotor.set(ControlMode.PercentOutput, 1);
         driveMotor.set(ControlMode.PercentOutput, 1);
+    }
+
+    /**
+     * Change the mode of the encoder of the angle motor to absolute.
+     */
+    public void setEncoderAbsolute() {
+        angleMotor.configFeedbackNotContinuous(true, Constants.TALON_TIMEOUT);
+    }
+
+    /**
+     * Change the mode of the encoder of the angle motor to relative.
+     */
+    public void setEncoderRelative(boolean reset) {
+        if (reset)
+            startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
+        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
+        if (reset) resetAngleMotor();
     }
 
     /**
