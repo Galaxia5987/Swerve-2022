@@ -47,14 +47,14 @@ public class DampedDrive extends CommandBase {
 
         double alpha = Math.atan2(forward, strafe);
         double vector = Math.hypot(forward, strafe);
+        vector = Utils.joystickDeadband(vector, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        vector = Utils.outerDeadzone(vector, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
+        alpha = Math.toRadians(Utils.angleDeadZones(Math.toDegrees(alpha), Constants.SwerveDrive.JOYSTICK_ANGLE_DEADZONE));
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
         double rotationSetpoint = Utils.joystickDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        if (vector < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
-            forward = 0;
-            strafe = 0;
-        }
+        rotationSetpoint = Utils.outerDeadzone(rotationSetpoint, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot
         forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;

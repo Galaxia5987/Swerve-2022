@@ -34,6 +34,35 @@ public class Utils {
         return val;
     }
 
+    /**
+     * sets the joystick vector value to 1 if the value is greater than the threshold
+     *
+     * @param vec       the joystick value vector
+     * @param threshold the threshold value
+     * @return 1 if vec is greater than the threshold otherwise returns vec
+     */
+    public static double outerDeadzone(double vec, double threshold) {
+        if (Math.abs(vec) > threshold)
+            return 1;
+        return vec;
+    }
+
+    /**
+     * sets the angle deadzones of the joystick to the nearest 90 degree multiple if the error is less than the threshold
+     *
+     * @param alphaDeg  the joystick angle
+     * @param threshold the threshold value
+     * @return a multiple of 90 if the angle is in the deadzone otherwise return the angle
+     */
+    public static double angleDeadZones(double alphaDeg, double threshold) {
+        double div = alphaDeg / 90;
+        double errorDeg = (Math.round(div) - div) * 90;
+        if (errorDeg < threshold)
+            return alphaDeg + errorDeg;
+        return alphaDeg;
+    }
+
+
     public static boolean isProblematic(double vector, double rotation) {
         return Math.abs(vector) <= PROBLEMATIC_LOW_SPEEDS_DEADBAND && rotation == 0;
     }
