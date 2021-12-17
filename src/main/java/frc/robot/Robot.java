@@ -19,9 +19,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-    public static final AHRS navx = new AHRS(SPI.Port.kMXP);
-    public static boolean debug = true;
-    public static double startAngle;
+    public static final boolean debug = true;
+    private static final AHRS navx = new AHRS(SPI.Port.kMXP);
+    private static double startAngle;
     //    private final Compressor compressor = new Compressor(0);
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
