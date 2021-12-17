@@ -8,18 +8,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DampedDrive;
-import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
-    private final SwerveDrive swerveDrive = new SwerveDrive(true);
+    private final SwerveDrive swerveDrive = SwerveDrive.getFieldRelativeInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
-    private boolean hasSwerveEncoderReset = false;
-
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -35,11 +32,11 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-//        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
-//                () -> -xbox.getY(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kRight)
-//        ));
+        /*        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
+                () -> -xbox.getY(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kRight)
+        ));*/
         swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
                 () -> -xbox.getY(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kLeft),

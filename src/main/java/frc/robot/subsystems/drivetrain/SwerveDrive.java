@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -20,8 +19,10 @@ public class SwerveDrive extends SubsystemBase {
     private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
     private static final double[] signX = {1, 1, -1, -1};
     private static final double[] signY = {-1, 1, -1, 1};
-    private static final SwerveDrive INSTANCE = new SwerveDrive(true);
-    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+    private static SwerveDrive FIELD_RELATIVE_INSTANCE = null;
+    private static SwerveDrive INSTANCE = null;
+
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             new Translation2d(signX[0] * Rx, -signY[0] * Ry),
             new Translation2d(signX[1] * Rx, -signY[1] * Ry),
             new Translation2d(signX[2] * Rx, -signY[2] * Ry),
@@ -45,10 +46,23 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * @return the swerve.
+     * @return the swerve in robot oriented mode.
      */
     public static SwerveDrive getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new SwerveDrive(false);
+        }
         return INSTANCE;
+    }
+
+    /**
+     * @return the swerve in field oriented mode.
+     */
+    public static SwerveDrive getFieldRelativeInstance() {
+        if (FIELD_RELATIVE_INSTANCE == null) {
+            FIELD_RELATIVE_INSTANCE = new SwerveDrive(true);
+        }
+        return FIELD_RELATIVE_INSTANCE;
     }
 
     /**
