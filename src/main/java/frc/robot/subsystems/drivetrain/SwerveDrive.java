@@ -29,7 +29,6 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, -signY[3] * Ry)
     );
     private final SwerveModule[] modules = new SwerveModule[4];
-    private final Timer timer = new Timer();
     private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
             Rotation2d.fromDegrees(angleSupplier.getAsDouble()), new Pose2d()
@@ -37,7 +36,6 @@ public class SwerveDrive extends SubsystemBase {
     private final boolean fieldOriented;
 
     public SwerveDrive(boolean fieldOriented) {
-        timer.start();
         this.fieldOriented = fieldOriented;
         modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
@@ -151,34 +149,23 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose, double holonomicRotation) {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(holonomicRotation)), Rotation2d.fromDegrees(holonomicRotation));
-        ;
     }
 
     /**
      * Terminates the motors.
      */
     public void terminate() {
-        for (var module : modules) {
+        for (SwerveModule module : modules) {
             module.stopDriveMotor();
             module.stopAngleMotor();
         }
     }
 
-    public void setNeutralMode(NeutralMode neutralMode) {
-        for (int i = 0; i < 4; i++) {
-            modules[i].setNeutralMode(neutralMode);
-        }
-    }
-
     @Override
     public void periodic() {
-        SwerveModuleState[] swerveModuleState = new SwerveModuleState[modules.length];
-        for (int i = 0; i < modules.length; i++) {
-            swerveModuleState[i] = new SwerveModuleState(modules[i].getVelocity(), modules[i].getAngle());
-        }
-        odometry.updateWithTime(timer.get(),
+        odometry.updateWithTime(Timer.getFPGATimestamp(),
                 new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
-                swerveModuleState
+                getStates()
         );
     }
 }
