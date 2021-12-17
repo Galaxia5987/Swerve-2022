@@ -42,6 +42,7 @@ public class SwerveModule extends SubsystemBase {
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
+        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -53,12 +54,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setSensorPhase(config.angleMotorSensorPhase);
 
         // Set amperage limits
-        SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(
-                Constants.ENABLE_CURRENT_LIMIT,
-                Constants.SwerveDrive.MAX_CURRENT,
-                Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT,
-                Constants.SwerveModule.TRIGGER_THRESHOLD_TIME
-        );
+        SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(Constants.ENABLE_CURRENT_LIMIT, Constants.SwerveDrive.MAX_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_TIME);
 
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
 
@@ -102,14 +98,8 @@ public class SwerveModule extends SubsystemBase {
         if (J == 0) throw new RuntimeException("J must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
         LinearSystem<N1, N1, N1> stateSpace = StateSpaceUtils.createVelocityLinearSystem(Constants.Motor.TalonFX, config.driveMotorGearRatio, J);
-        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
-                VecBuilder.fill(config.modelTolerance),
-                VecBuilder.fill(config.encoderTolerance),
-                Constants.LOOP_PERIOD
-        );
-        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(config.velocityTolerance),
-                VecBuilder.fill(Constants.NOMINAL_VOLTAGE),
-                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace, VecBuilder.fill(config.modelTolerance), VecBuilder.fill(config.encoderTolerance), Constants.LOOP_PERIOD);
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(config.velocityTolerance), VecBuilder.fill(Constants.NOMINAL_VOLTAGE), Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
 
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
@@ -128,7 +118,7 @@ public class SwerveModule extends SubsystemBase {
      * @param speed the speed of the wheel.[m/s]
      */
     public void setVelocity(double speed) {
-        double timeInterval = Math.max(20, currentTime - lastTime);
+        double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
         double currentSpeed = getVelocity() / (2 * Math.PI * config.wheelRadius); // [rps]
         double targetSpeed = speed / (2 * Math.PI * config.wheelRadius); // [rps]
 
@@ -156,8 +146,7 @@ public class SwerveModule extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         var currentAngle = getAngle();
         var error = angle.minus(currentAngle);
-        if (Math.abs(angleUnitModel.toTicks(error.getRadians())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR)
-            return;
+        if (Math.abs(angleUnitModel.toTicks(error.getRadians())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
 
         angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error.getRadians()));
     }
