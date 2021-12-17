@@ -41,7 +41,7 @@ public class FollowPath extends CommandBase {
         timer.reset();
         timer.start();
         Robot.resetAngle();
-        swerveDrive.resetOdometry(target.getInitialPose(), target.getInitialState().holonomicRotation.getDegrees());
+        swerveDrive.resetOdometry(target.getInitialPose(), target.getInitialState().holonomicRotation);
     }
 
     @Override

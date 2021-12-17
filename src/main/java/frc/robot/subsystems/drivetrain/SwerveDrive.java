@@ -160,16 +160,17 @@ public class SwerveDrive extends SubsystemBase {
      * Resets the odometry.
      */
     public void resetOdometry() {
-        odometry.resetPosition(new Pose2d(), Rotation2d.fromDegrees(0));
+        resetOdometry(new Pose2d(), new Rotation2d());
     }
 
     /**
      * Resets the odometry to a specified position.
      *
      * @param pose the current pose.
+     * @param rotation the holonomic rotation.
      */
-    public void resetOdometry(Pose2d pose, double holonomicRotation) {
-        odometry.resetPosition(new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(holonomicRotation)), Rotation2d.fromDegrees(holonomicRotation));
+    public void resetOdometry(Pose2d pose, Rotation2d rotation) {
+        odometry.resetPosition(new Pose2d(pose.getTranslation(), rotation), rotation);
     }
 
     /**
