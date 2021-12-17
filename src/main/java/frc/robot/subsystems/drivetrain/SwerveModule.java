@@ -32,7 +32,6 @@ public class SwerveModule extends SubsystemBase {
     private final Timer timer = new Timer();
     private LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
-    private double startAngle = 0;
 
     public SwerveModule(SwerveModuleConfig config) {
         this.config = config;
