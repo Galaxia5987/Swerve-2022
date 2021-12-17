@@ -38,13 +38,29 @@ public class Robot extends TimedRobot {
     }
 
     /**
+     * Resets the angle of the navx to the current angle.
+     */
+    public static void resetAngle() {
+        resetAngle(navx.getYaw());
+    }
+
+    /**
+     * Resets the angle of the navx to the current angle.
+     *
+     * @param angle the angle in -180 to 180 degrees coordinate system.
+     */
+    public static void resetAngle(double angle) {
+        startAngle = (angle + 360) % 360;
+    }
+
+    /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     @Override
     public void robotInit() {
+        resetAngle();
         m_robotContainer = new RobotContainer();
-        startAngle = (navx.getYaw() + 360) % 360;
     }
 
     /**
