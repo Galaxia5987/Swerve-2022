@@ -98,23 +98,45 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
+     * Gets te states of the modules.
+     *
+     * @return the states of the modules.
+     */
+    public SwerveModuleState[] getStates() {
+        SwerveModuleState[] swerveModuleState = new SwerveModuleState[modules.length];
+        for (SwerveModule module : modules) {
+            swerveModuleState[module.getWheel()] = module.getState();
+        }
+        return swerveModuleState;
+    }
+
+    /**
      * Sets the state of the motors.
      *
      * @param states the states of the motors.
      */
     public void setStates(SwerveModuleState[] states) {
-        for (int i = 0; i < states.length; i++) {
-            states[i] = SwerveModuleState.optimize(states[i], getModule(i).getAngle());
-            getModule(i).setState(states[i]);
+        for (SwerveModule module : modules) {
+            SwerveModuleState state = states[module.getWheel()];
+            state = SwerveModuleState.optimize(state, module.getAngle());
+            module.setState(state);
         }
     }
 
+    /**
+     * Gets the chassis speeds of the entire robot.
+     *
+     * @return the speed of the robot in each axis.
+     */
     public ChassisSpeeds getChassisSpeeds() {
-        SwerveModuleState[] swerveModuleStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++)
-            swerveModuleStates[i] = new SwerveModuleState(getModule(i).getVelocity(), getModule(i).getAngle());
+        SwerveModuleState[] swerveModuleStates = getStates();
         ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, Rotation2d.fromDegrees(angleSupplier.getAsDouble()));
+        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                chassisSpeeds.vxMetersPerSecond,
+                chassisSpeeds.vyMetersPerSecond,
+                chassisSpeeds.omegaRadiansPerSecond,
+                Rotation2d.fromDegrees(angleSupplier.getAsDouble())
+        );
         return chassisSpeeds;
     }
 
