@@ -30,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
 
     private final SwerveModuleConfig config;
     private final Timer timer = new Timer();
-    private LinearSystemLoop<N1, N1, N1> stateSpace;
+    private final LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
 
     public SwerveModule(SwerveModuleConfig config) {
@@ -39,6 +39,8 @@ public class SwerveModule extends SubsystemBase {
         angleMotor = new WPI_TalonSRX(config.angleMotorPort);
         driveUnitModel = new UnitModel(config.ticksPerMeter);
         angleUnitModel = new UnitModel(config.ticksPerRadian);
+        stateSpace = constructLinearSystem(config.j);
+
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
@@ -98,9 +100,17 @@ public class SwerveModule extends SubsystemBase {
         if (J == 0) throw new RuntimeException("J must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
         LinearSystem<N1, N1, N1> stateSpace = StateSpaceUtils.createVelocityLinearSystem(Constants.Motor.TalonFX, config.driveMotorGearRatio, J);
-        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace, VecBuilder.fill(config.modelTolerance), VecBuilder.fill(config.encoderTolerance), Constants.LOOP_PERIOD);
-        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(config.velocityTolerance), VecBuilder.fill(Constants.NOMINAL_VOLTAGE), Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
+                VecBuilder.fill(config.modelTolerance),
+                VecBuilder.fill(config.encoderTolerance),
+                Constants.LOOP_PERIOD
         );
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace,
+                VecBuilder.fill(config.velocityTolerance),
+                VecBuilder.fill(Constants.NOMINAL_VOLTAGE),
+                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        );
+        lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
