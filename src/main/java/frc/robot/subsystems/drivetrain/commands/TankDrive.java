@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -19,26 +20,16 @@ public class TankDrive extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setAngle(new Rotation2d(0));
-        }
-    }
-
-    @Override
     public void execute() {
         double rightForward = rightVelocity.getAsDouble();
         double leftForward = leftVelocity.getAsDouble();
+        SwerveModuleState rightState = new SwerveModuleState(rightForward, new Rotation2d(0));
+        SwerveModuleState leftState = new SwerveModuleState(leftForward, new Rotation2d(0));
 
-        swerveDrive.getModule(0).setVelocity(rightForward);
-        swerveDrive.getModule(2).setVelocity(rightForward);
+        swerveDrive.getModule(0).setState(rightState);
+        swerveDrive.getModule(2).setState(rightState);
 
-        swerveDrive.getModule(1).setVelocity(leftForward);
-        swerveDrive.getModule(3).setVelocity(leftForward);
-
-        swerveDrive.getModule(0).setAngle(new Rotation2d(0));
-        swerveDrive.getModule(2).setAngle(new Rotation2d(0));
-        swerveDrive.getModule(1).setAngle(new Rotation2d(0));
-        swerveDrive.getModule(3).setAngle(new Rotation2d(0));
+        swerveDrive.getModule(1).setState(leftState);
+        swerveDrive.getModule(3).setState(leftState);
     }
 }
