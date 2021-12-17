@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.DampedDrive;
 import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
+import frc.robot.valuetuner.ValueTuner;
+import webapp.Webserver;
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
@@ -24,6 +26,12 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings and default commands
         configureDefaultCommands();
+
+        if (Robot.debug) {
+            startValueTuner();
+            startFireLog();
+        }
+
         configureButtonBindings();
     }
 
@@ -58,5 +66,24 @@ public class RobotContainer {
                 new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
                     enableContinuousInput(-Math.PI, Math.PI);
                 }});
+    }
+
+    /**
+     * Initiates the value tuner.
+     */
+    private void startValueTuner() {
+        new ValueTuner().start();
+    }
+
+    /**
+     * Initiates the port of team 225s Fire-Logger.
+     */
+    private void startFireLog() {
+
+        try {
+            new Webserver();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
