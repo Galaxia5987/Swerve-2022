@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -26,6 +27,15 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
 
+    /**
+     * Gets the current angle of the robot in respect to the start angle.
+     *
+     * @return the current angle of the robot in respect to the start angle.
+     */
+    public static Rotation2d getAngle() {
+        double currentAngle = (navx.getYaw() + 360) % 360;
+        return Rotation2d.fromDegrees(Math.IEEEremainder(currentAngle - startAngle, 360));
+    }
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -33,9 +43,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        navx.reset();
         m_robotContainer = new RobotContainer();
-        startAngle = navx.getYaw();
+        startAngle = (navx.getYaw() + 360) % 360;
     }
 
     /**
@@ -48,7 +57,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-
     }
 
     /**
@@ -118,7 +126,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
-
     }
 
     /**
