@@ -62,24 +62,4 @@ public class RobotContainer {
                     enableContinuousInput(-Math.PI, Math.PI);
                 }});
     }
-
-    public void teleopInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
-        }
-        hasSwerveEncoderReset = true;
-    }
-
-    public void autoInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderRelative(!hasSwerveEncoderReset);
-        }
-        hasSwerveEncoderReset = true;
-    }
-
-    public void disableInit() {
-        for (int i = 0; i < 4; i++) {
-            swerveDrive.getModule(i).setEncoderAbsolute();
-        }
-    }
 }

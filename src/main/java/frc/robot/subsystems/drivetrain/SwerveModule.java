@@ -203,23 +203,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Change the mode of the encoder of the angle motor to absolute.
-     */
-    public void setEncoderAbsolute() {
-        angleMotor.configFeedbackNotContinuous(true, Constants.TALON_TIMEOUT);
-    }
-
-    /**
-     * Change the mode of the encoder of the angle motor to relative.
-     */
-    public void setEncoderRelative(boolean reset) {
-        if (reset)
-            startAngle = Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition), 2 * Math.PI);
-        angleMotor.configFeedbackNotContinuous(false, Constants.TALON_TIMEOUT);
-        if (reset) resetAngleMotor();
-    }
-
-    /**
      * Resets the angle motor encoder position back to 0.
      */
     public void resetAngleMotor() {
