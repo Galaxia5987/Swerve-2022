@@ -1,13 +1,11 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.DampedDrive;
 import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
@@ -40,16 +38,19 @@ public class RobotContainer {
     }
 
     private void configureDefaultCommands() {
-        /*        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
-                () -> -xbox.getY(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kRight)
-        ));*/
+//        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
+//                () -> -xbox.getY(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kRight)
+//        ));
+//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
+/*
         swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
                 () -> -xbox.getY(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kRight)
         ));
+*/
     }
 
 

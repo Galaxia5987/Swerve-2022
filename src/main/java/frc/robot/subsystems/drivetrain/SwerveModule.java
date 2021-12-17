@@ -85,10 +85,6 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionCruiseVelocity(config.motionCruseVelocity);
         angleMotor.configMotionSCurveStrength(config.curveStrength);
 
-        if (config.wheel == 3) {
-            angleMotor.configMotionAcceleration(1000);
-            angleMotor.configMotionCruiseVelocity(1000);
-        }
     }
 
     /**
@@ -214,6 +210,12 @@ public class SwerveModule extends SubsystemBase {
      */
     public int getWheel() {
         return config.wheel;
+    }
+
+    public void configPID(double kp, double ki, double kd) {
+        angleMotor.config_kP(0, kp, Constants.TALON_TIMEOUT);
+        angleMotor.config_kI(0, ki, Constants.TALON_TIMEOUT);
+        angleMotor.config_kD(0, kd, Constants.TALON_TIMEOUT);
     }
 
     @Override

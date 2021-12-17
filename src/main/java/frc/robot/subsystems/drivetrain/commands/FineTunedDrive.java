@@ -12,8 +12,8 @@ import frc.robot.utils.Utils;
 import java.util.function.DoubleSupplier;
 
 public class FineTunedDrive extends CommandBase {
-    public static final PIDController driveController = new PIDController(0.08, 0, 0);
-    public static final PIDController rotationController = new PIDController(0.1, 0, 0);
+    public static final PIDController driveController = new PIDController(0.12, 0, 0);
+    public static final PIDController rotationController = new PIDController(0.25, 0, 0);
     private final SwerveDrive swerveDrive;
     private final DoubleSupplier forwardSupplier;
     private final DoubleSupplier strafeSupplier;

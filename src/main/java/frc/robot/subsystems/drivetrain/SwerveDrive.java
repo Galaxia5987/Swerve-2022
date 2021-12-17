@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import webapp.FireLog;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class SwerveDrive extends SubsystemBase {
@@ -92,7 +92,7 @@ public class SwerveDrive extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, angleSupplier.get()) :
                 new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
+//        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         setStates(states);
     }
 
@@ -166,7 +166,7 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * Resets the odometry to a specified position.
      *
-     * @param pose the current pose.
+     * @param pose     the current pose.
      * @param rotation the holonomic rotation.
      */
     public void resetOdometry(Pose2d pose, Rotation2d rotation) {
@@ -190,4 +190,6 @@ public class SwerveDrive extends SubsystemBase {
                 getStates()
         );
     }
+
 }
+

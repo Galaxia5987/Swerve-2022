@@ -74,59 +74,57 @@ public final class Constants {
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
         public static final double JOYSTICK_THRESHOLD = 0.1;
-        public static final double VELOCITY_MULTIPLIER = 3; // 4 / Math.sqrt(2)
+        public static final double VELOCITY_MULTIPLIER = 3 * 3.5; // 4 / Math.sqrt(2)
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
-        public static final double ROTATION_MULTIPLIER = Math.PI;
+        public static final double ROTATION_MULTIPLIER = Math.PI * 3.5;
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {929, -518, 314, 907}; // fr, fl, rr, rl
-
+        public static final int[] ZERO_POSITIONS = {1017, 496, 1327, 921}; // fr, fl, rr, rl
+        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
+        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
+        public static final WebConstant[] PID = new WebConstant[]{new WebConstant("kp", 0), new WebConstant("ki", 0), new WebConstant("kd", 0)};
+        public static final WebConstant WHEEL = new WebConstant("Wheel", 0);
+        private static final double magicSafety = 1;
         public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, DRIVE_SENSOR_PHASE_FR, ANGLE_SENSOR_PHASE_FR)
                 .configAnglePID(4.5, 0.0045, 1, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
-                .configJ(0.0043)
-                .configMotionMagic(2000, 4000, 4)
+                .configJ(0.03165)
+                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-
         public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder(1)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, DRIVE_SENSOR_PHASE_FL, ANGLE_SENSOR_PHASE_FL)
-                .configAnglePID(4, 0.0045, 3, 0)
+                .configAnglePID(13, 0.0045, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
-                .configJ(0.0043)
-                .configMotionMagic(2000, 4000, 4)
+                .configJ(0.0322)
+                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-
         public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder(2)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, DRIVE_SENSOR_PHASE_RR, ANGLE_SENSOR_PHASE_RR)
-                .configAnglePID(4.35, 0.004, 0, 0)
+                .configAnglePID(8, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[2])
-                .configJ(0.0043)
-                .configMotionMagic(2000, 4000, 4)
+                .configJ(0.03185)
+                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-
         public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder(3)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, DRIVE_SENSOR_PHASE_RL, ANGLE_SENSOR_PHASE_RL)
-                .configAnglePID(4.5, 0.004, 0, 0)
+                .configAnglePID(10, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[3])
-                .configJ(0.0043)
-                .configMotionMagic(1000, 1000, 4)
+                .configJ(0.03165)
+                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-
-        public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
-        public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
     }
 
     public static class Autonomous {
