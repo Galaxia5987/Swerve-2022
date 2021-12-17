@@ -28,7 +28,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        a.whenPressed(Robot.navx::reset);
+        a.whenPressed((Runnable) Robot::resetAngle);
     }
 
     private void configureDefaultCommands() {

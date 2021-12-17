@@ -58,9 +58,9 @@ public class DampedDrive extends CommandBase {
         strafe = vyFilter.calculate(strafe);
 
         if (rotation != 0)
-            storedYaw = Robot.navx.getYaw();
+            storedYaw = Robot.getAngle().getDegrees();
         else if (forward != 0 || strafe != 0) {
-            rotation = thetaController.calculate(Robot.navx.getYaw(), storedYaw);
+            rotation = thetaController.calculate(Robot.getAngle().getDegrees(), storedYaw);
         }
 
         swerve.holonomicDrive(forward, strafe, rotation);

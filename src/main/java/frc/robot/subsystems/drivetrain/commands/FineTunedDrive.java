@@ -85,13 +85,13 @@ public class FineTunedDrive extends CommandBase {
 
         if (Utils.isStraightLine(forward, strafe, rotation)) {
             if (!isAngleSet) {
-                referenceAngle = Robot.navx.getYaw();
+                referenceAngle = Robot.getAngle().getDegrees();
                 isAngleSet = true;
             }
             swerveDrive.holonomicDrive(
                     getForwardStraightLine(forward, swerveDrive.getChassisSpeeds().vxMetersPerSecond),
                     getStrafeStraightLine(strafe, swerveDrive.getChassisSpeeds().vyMetersPerSecond),
-                    getRotationStraightLine(referenceAngle, Robot.navx.getYaw()));
+                    getRotationStraightLine(referenceAngle, Robot.getAngle().getDegrees()));
             return;
         }
         if (Utils.isRotationOnly(forward, strafe, rotation)) {

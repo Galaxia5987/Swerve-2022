@@ -40,7 +40,7 @@ public class FollowPath extends CommandBase {
         hController = new HolonomicDriveController(forwardPID, strafePID, rotationPID);
         timer.reset();
         timer.start();
-        Robot.navx.reset();
+        Robot.resetAngle();
         swerveDrive.resetOdometry(target.getInitialPose(), target.getInitialState().holonomicRotation.getDegrees());
     }
 
