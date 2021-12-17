@@ -197,13 +197,17 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setSelectedSensorPosition(0);
     }
 
-    public void setNeutralMode(NeutralMode neutralMode) {
-        driveMotor.setNeutralMode(neutralMode);
+    /**
+     * Gets the wheel number.
+     *
+     * @return the wheel number.
+     */
+    public int getWheel() {
+        return config.wheel;
     }
 
     @Override
     public void periodic() {
-        stateSpace = constructLinearSystem(config.j);
         lastTime = currentTime;
         currentTime = timer.get();
     }
