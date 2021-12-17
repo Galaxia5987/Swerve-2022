@@ -12,7 +12,7 @@ public class RotateToAngle extends CommandBase {
             Constants.SwerveDrive.KI_TURN, Constants.SwerveDrive.KD_TURN);
     private double startAngle;
     private double angleTarget;
-    private double angle;
+    private final double angle;
 
     public RotateToAngle(SwerveDrive swerveDrive, double angle) {
         this.swerveDrive = swerveDrive;

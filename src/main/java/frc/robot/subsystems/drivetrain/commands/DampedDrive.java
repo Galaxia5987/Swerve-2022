@@ -18,8 +18,8 @@ public class DampedDrive extends CommandBase {
     private final DoubleSupplier forwardSupplier;
     private final DoubleSupplier strafeSupplier;
     private final DoubleSupplier rotationSupplier;
-    private double storedYaw;
     private final SwerveDrive swerve;
+    private double storedYaw;
 
     public DampedDrive(SwerveDrive swerve, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         this.swerve = swerve;

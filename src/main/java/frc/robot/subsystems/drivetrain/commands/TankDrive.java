@@ -9,7 +9,7 @@ import java.util.function.DoubleSupplier;
 public class TankDrive extends CommandBase {
     private final DoubleSupplier rightVelocity;
     private final DoubleSupplier leftVelocity;
-    private SwerveDrive swerveDrive;
+    private final SwerveDrive swerveDrive;
 
     public TankDrive(SwerveDrive swerveDrive, DoubleSupplier rightVelocity, DoubleSupplier leftVelocity) {
         this.swerveDrive = swerveDrive;
