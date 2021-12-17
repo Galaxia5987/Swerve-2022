@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class SwerveDrive extends SubsystemBase {
     private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
@@ -29,10 +30,8 @@ public class SwerveDrive extends SubsystemBase {
             new Translation2d(signX[3] * Rx, -signY[3] * Ry)
     );
     private final SwerveModule[] modules = new SwerveModule[4];
-    private final DoubleSupplier angleSupplier = Robot.navx::getYaw;
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
-            Rotation2d.fromDegrees(angleSupplier.getAsDouble()), new Pose2d()
-    );
+    private final Supplier<Rotation2d> angleSupplier = Robot::getAngle;
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, angleSupplier.get(), new Pose2d());
     private final boolean fieldOriented;
 
     public SwerveDrive(boolean fieldOriented) {
@@ -90,7 +89,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
         ChassisSpeeds speeds = fieldOriented ?
-                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Rotation2d.fromDegrees(angleSupplier.getAsDouble())) :
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, angleSupplier.get()) :
                 new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
@@ -135,7 +134,7 @@ public class SwerveDrive extends SubsystemBase {
                 chassisSpeeds.vxMetersPerSecond,
                 chassisSpeeds.vyMetersPerSecond,
                 chassisSpeeds.omegaRadiansPerSecond,
-                Rotation2d.fromDegrees(angleSupplier.getAsDouble())
+                angleSupplier.get()
         );
         return chassisSpeeds;
     }
@@ -186,7 +185,7 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.updateWithTime(Timer.getFPGATimestamp(),
-                new Rotation2d(Math.toRadians(Robot.navx.getYaw())),
+                angleSupplier.get(),
                 getStates()
         );
     }
