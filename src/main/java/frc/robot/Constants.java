@@ -73,7 +73,7 @@ public final class Constants {
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
         public static final double JOYSTICK_THRESHOLD = 0.1;
-        public static final double SPEED_MULTIPLIER = 3; // 4 / Math.sqrt(2)
+        public static final double VELOCITY_MULTIPLIER = 3; // 4 / Math.sqrt(2)
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;

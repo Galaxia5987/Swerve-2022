@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.wpilibj.SlewRateLimiter;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -51,8 +50,8 @@ public class DampedDrive extends CommandBase {
         rotation = Utils.outerDeadzone(rotation, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot
-        forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
+        forward *= Constants.SwerveDrive.VELOCITY_MULTIPLIER;
+        strafe *= Constants.SwerveDrive.VELOCITY_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
 
         forward = vxFilter.calculate(forward);

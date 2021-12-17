@@ -40,8 +40,8 @@ public class HolonomicDrive extends CommandBase {
         }
 
         // turns the joystick values into the heading of the robot
-        forward *= Constants.SwerveDrive.SPEED_MULTIPLIER;
-        strafe *= Constants.SwerveDrive.SPEED_MULTIPLIER;
+        forward *= Constants.SwerveDrive.VELOCITY_MULTIPLIER;
+        strafe *= Constants.SwerveDrive.VELOCITY_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER;
         if (forward != 0 || strafe != 0 || rotation != 0) {
             swerveDrive.holonomicDrive(forward, strafe, rotation);
