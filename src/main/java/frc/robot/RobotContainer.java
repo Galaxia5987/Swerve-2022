@@ -1,12 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.autonomous.FollowPath;
+import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -14,9 +13,12 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
+    public static Joystick joystick = new Joystick(2);
+    public static Joystick joystick2 = new Joystick(3);
     private final SwerveDrive swerveDrive = SwerveDrive.getFieldRelativeInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -43,6 +45,11 @@ public class RobotContainer {
 //                () -> xbox.getX(GenericHID.Hand.kLeft),
 //                () -> xbox.getX(GenericHID.Hand.kRight)
 //        ));
+        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
+                () -> -joystick.getY(),
+                () -> joystick.getX(),
+                () -> joystick2.getX()
+        ));
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
 /*
         swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
@@ -62,11 +69,12 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
 
         // An ExampleCommand will run in autonomous
-        return new FollowPath(swerveDrive, "New New New New New New New New Path", 1, 0.75, new PIDController(Constants.Autonomous.kPXController, 0, 0),
-                new PIDController(Constants.Autonomous.kPYController, 0, 0),
-                new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
-                    enableContinuousInput(-Math.PI, Math.PI);
-                }});
+//        return new FollowPath(swerveDrive, "New New New New New New New New Path", 1, 0.75, new PIDController(Constants.Autonomous.kPXController, 0, 0),
+//                new PIDController(Constants.Autonomous.kPYController, 0, 0),
+//                new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
+//                    enableContinuousInput(-Math.PI, Math.PI);
+//                }});
+        return null;
     }
 
     /**
