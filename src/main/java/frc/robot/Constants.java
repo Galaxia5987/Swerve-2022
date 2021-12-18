@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
+import frc.robot.utils.SwerveModuleConfigBase;
 import frc.robot.valuetuner.WebConstant;
 
 import static frc.robot.Ports.SwerveDrive.*;
@@ -89,7 +90,7 @@ public final class Constants {
         public static final WebConstant[] PID = new WebConstant[]{new WebConstant("kp", 0), new WebConstant("ki", 0), new WebConstant("kd", 0)};
         public static final WebConstant WHEEL = new WebConstant("Wheel", 0);
         private static final double magicSafety = 1;
-        public static final SwerveModuleConfig frConfig = new SwerveModuleConfig.Builder(0)
+        public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, DRIVE_SENSOR_PHASE_FR, ANGLE_SENSOR_PHASE_FR)
@@ -98,7 +99,7 @@ public final class Constants {
                 .configJ(0.03165)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-        public static final SwerveModuleConfig flConfig = new SwerveModuleConfig.Builder(1)
+        public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfig.Builder(1)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FL, ANGLE_MOTOR_FL)
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, DRIVE_SENSOR_PHASE_FL, ANGLE_SENSOR_PHASE_FL)
@@ -107,7 +108,7 @@ public final class Constants {
                 .configJ(0.0322)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-        public static final SwerveModuleConfig rrConfig = new SwerveModuleConfig.Builder(2)
+        public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfig.Builder(2)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RR, ANGLE_MOTOR_RR)
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, DRIVE_SENSOR_PHASE_RR, ANGLE_SENSOR_PHASE_RR)
@@ -116,7 +117,7 @@ public final class Constants {
                 .configJ(0.03185)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
-        public static final SwerveModuleConfig rlConfig = new SwerveModuleConfig.Builder(3)
+        public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfig.Builder(3)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_RL, ANGLE_MOTOR_RL)
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, DRIVE_SENSOR_PHASE_RL, ANGLE_SENSOR_PHASE_RL)

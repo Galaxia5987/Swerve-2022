@@ -1,52 +1,54 @@
 package frc.robot.utils;
 
-public class SwerveModuleConfig {
-    public final int wheel;
+import frc.robot.valuetuner.WebConstant;
+
+public class SwerveModuleConfig implements SwerveModuleConfigBase {
+    private final int wheel;
 
     // ports
-    public final int driveMotorPort;
-    public final int angleMotorPort;
+    private final int driveMotorPort;
+    private final int angleMotorPort;
 
     // inversions
-    public final boolean driveMotorInverted;
-    public final boolean angleMotorInverted;
-    public final boolean driveMotorSensorPhase;
-    public final boolean angleMotorSensorPhase;
+    private final boolean driveMotorInverted;
+    private final boolean angleMotorInverted;
+    private final boolean driveMotorSensorPhase;
+    private final boolean angleMotorSensorPhase;
 
     // PID
-    public final double angle_kp;
-    public final double angle_ki;
-    public final double angle_kd;
-    public final double angle_kf;
+    private final double angle_kp;
+    private final double angle_ki;
+    private final double angle_kd;
+    private final double angle_kf;
 
-    public final double j; // moment of inertia [kg * m^2]
+    private final double j; // moment of inertia [kg * m^2]
 
-    public final double zeroPosition; // [ticks]
+    private final double zeroPosition; // [ticks]
 
     // Motion Magic
-    public final int motionAcceleration;
-    public final int motionCruseVelocity;
-    public final int curveStrength;
+    private final int motionAcceleration;
+    private final int motionCruiseVelocity;
+    private final int curveStrength;
 
     // drive motor
-    public final double ticksPerMeter;
-    public final double wheelRadius; // [m]
+    private final double ticksPerMeter;
+    private final double wheelRadius; // [m]
 
     // angle motor
-    public final double ticksPerRadian;
+    private final double ticksPerRadian;
 
     // constraints
-    public final int angleMaxCurrent; // [amps]
-    public final double velocityTolerance; // [RPS]
-    public final double modelTolerance;
-    public final double encoderTolerance; // [ticks]
-    public final double driveMotorGearRatio;
+    private final int angleMaxCurrent; // [amps]
+    private final double velocityTolerance; // [RPS]
+    private final double modelTolerance;
+    private final double encoderTolerance; // [ticks]
+    private final double driveMotorGearRatio;
 
     public SwerveModuleConfig(int wheel, int driveMotorPort, int angleMotorPort,
                               boolean driveMotorInverted, boolean angleMotorInverted,
                               boolean driveMotorSensorPhase, boolean angleMotorSensorPhase,
                               double angle_kp, double angle_ki, double angle_kd, double angle_kf,
-                              double j, double zeroPosition, int motionAcceleration, int motionCruseVelocity, int curveStrength, CommonSwerveConfig commonConfig) {
+                              double j, double zeroPosition, int motionAcceleration, int motionCruiseVelocity, int curveStrength, CommonSwerveConfig commonConfig) {
         this.wheel = wheel;
         this.driveMotorPort = driveMotorPort;
         this.angleMotorPort = angleMotorPort;
@@ -61,7 +63,7 @@ public class SwerveModuleConfig {
         this.j = j;
         this.zeroPosition = zeroPosition;
         this.motionAcceleration = motionAcceleration;
-        this.motionCruseVelocity = motionAcceleration;
+        this.motionCruiseVelocity = motionCruiseVelocity;
         this.curveStrength = curveStrength;
         this.ticksPerMeter = commonConfig.ticksPerMeter;
         this.wheelRadius = commonConfig.wheelRadius;
@@ -71,6 +73,131 @@ public class SwerveModuleConfig {
         this.modelTolerance = commonConfig.modelTolerance;
         this.encoderTolerance = commonConfig.encoderTolerance;
         this.driveMotorGearRatio = commonConfig.driveMotorGearRatio;
+    }
+
+    @Override
+    public int wheel() {
+        return wheel;
+    }
+
+    @Override
+    public int driveMotorPort() {
+        return driveMotorPort;
+    }
+
+    @Override
+    public int angleMotorPort() {
+        return angleMotorPort;
+    }
+
+    @Override
+    public boolean driveMotorInverted() {
+        return driveMotorInverted;
+    }
+
+    @Override
+    public boolean angleMotorInverted() {
+        return angleMotorInverted;
+    }
+
+    @Override
+    public boolean driveMotorSensorPhase() {
+        return driveMotorSensorPhase;
+    }
+
+    @Override
+    public boolean angleMotorSensorPhase() {
+        return angleMotorSensorPhase;
+    }
+
+    @Override
+    public double angle_kp() {
+        return angle_kp;
+    }
+
+    @Override
+    public double angle_ki() {
+        return angle_ki;
+    }
+
+    @Override
+    public double angle_kd() {
+        return angle_kd;
+    }
+
+    @Override
+    public double angle_kf() {
+        return angle_kf;
+    }
+
+    @Override
+    public double j() {
+        return j;
+    }
+
+    @Override
+    public double zeroPosition() {
+        return zeroPosition;
+    }
+
+    @Override
+    public int motionAcceleration() {
+        return motionAcceleration;
+    }
+
+    @Override
+    public int motionCruiseVelocity() {
+        return motionCruiseVelocity;
+    }
+
+    @Override
+    public int curveStrength() {
+        return curveStrength;
+    }
+
+    @Override
+    public double ticksPerMeter() {
+        return ticksPerMeter;
+    }
+
+    @Override
+    public double wheelRadius() {
+        return wheelRadius;
+    }
+
+    @Override
+    public double ticksPerRadian() {
+        return ticksPerRadian;
+    }
+
+    @Override
+    public int angleMaxCurrent() {
+        return angleMaxCurrent;
+    }
+
+    @Override
+    public double velocityTolerance() {
+        return velocityTolerance;
+    }
+
+    @Override
+    public double modelTolerance() {
+        return modelTolerance;
+    }
+
+    @Override
+    public double encoderTolerance() {
+        return encoderTolerance;
+    }
+
+    @Override
+    public double driveMotorGearRatio() {
+        return driveMotorGearRatio;
+    }
+
+    @Override
+    public boolean debug() {
+        return false;
     }
 
     public static final class Builder {
@@ -95,6 +222,8 @@ public class SwerveModuleConfig {
         private int motionAcceleration;
         private int motionCruseVelocity;
         private int curveStrength;
+
+        private boolean debug;
 
         public Builder(int wheel) {
             this.wheel = wheel;
@@ -146,8 +275,19 @@ public class SwerveModuleConfig {
             return this;
         }
 
+        public Builder enableDebug() {
+            this.debug = true;
+            return this;
+        }
 
-        public SwerveModuleConfig build() {
+        public SwerveModuleConfigBase build() {
+            if (debug) {
+                return new SwerveModuleConfigDebug(wheel, driveMotorPort, angleMotorPort,
+                        driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
+                        new WebConstant("Swerve_" + wheel + "_kp", angle_kp), new WebConstant("Swerve_" + wheel + "_ki", angle_ki),
+                        new WebConstant("Swerve_" + wheel + "_kd", angle_kd), new WebConstant("Swerve_" + wheel + "_kf", angle_kf),
+                        new WebConstant("Swerve_" + wheel + "_j", j), zeroPosition, motionAcceleration, motionCruseVelocity, curveStrength, commonConfig);
+            }
             return new SwerveModuleConfig(wheel, driveMotorPort, angleMotorPort,
                     driveMotorInverted, angleMotorInverted, driveMotorSensorPhase, angleMotorSensorPhase,
                     angle_kp, angle_ki, angle_kd, angle_kf,
