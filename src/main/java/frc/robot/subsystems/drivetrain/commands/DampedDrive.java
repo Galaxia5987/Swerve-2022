@@ -11,7 +11,6 @@ import frc.robot.utils.Utils;
 import java.util.function.DoubleSupplier;
 
 public class DampedDrive extends CommandBase {
-
     private static final SlewRateLimiter vxFilter = new SlewRateLimiter(16);
     private static final SlewRateLimiter vyFilter = new SlewRateLimiter(16);
     private static final PIDController thetaController = new PIDController(0.1, 0, 0); // important to add ki
@@ -40,13 +39,13 @@ public class DampedDrive extends CommandBase {
 
         double alpha = Math.atan2(forward, strafe);
         double vector = Math.hypot(forward, strafe);
-        vector = Utils.joystickDeadband(vector, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        vector = Utils.deadband(vector, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         vector = Utils.outerDeadzone(vector, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
         alpha = Math.toRadians(Utils.angleDeadZones(Math.toDegrees(alpha), Constants.SwerveDrive.JOYSTICK_ANGLE_DEADZONE));
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
-        double rotation = Utils.joystickDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         rotation = Utils.outerDeadzone(rotation, Constants.SwerveDrive.OUTER_JOYSTICK_THRESHOLD);
 
         // turns the joystick values into the heading of the robot

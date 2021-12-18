@@ -28,7 +28,7 @@ public class Utils {
      * @param threshold the threshold value
      * @return 0 if val is less than the threshold else val
      */
-    public static double joystickDeadband(double val, double threshold) {
+    public static double deadband(double val, double threshold) {
         if (Math.abs(val) < threshold)
             return 0;
         return val;

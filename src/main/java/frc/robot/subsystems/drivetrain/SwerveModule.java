@@ -18,7 +18,7 @@ import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
-import frc.robot.UnitModel;
+import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.StateSpaceUtils;
 import frc.robot.utils.SwerveModuleConfig;
 

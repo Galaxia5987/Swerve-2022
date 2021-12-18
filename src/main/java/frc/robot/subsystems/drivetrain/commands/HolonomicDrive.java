@@ -33,7 +33,7 @@ public class HolonomicDrive extends CommandBase {
         forward = Math.sin(alpha) * vector;
         strafe = Math.cos(alpha) * vector;
 
-        double rotation = Utils.joystickDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
         if (vector < Constants.SwerveDrive.JOYSTICK_THRESHOLD) {
             forward = 0;
             strafe = 0;

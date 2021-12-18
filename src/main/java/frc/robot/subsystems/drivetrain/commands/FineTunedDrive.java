@@ -60,7 +60,7 @@ public class FineTunedDrive extends CommandBase {
         double vector = Math.hypot(forward, strafe);
         if (Math.abs(vector) < 0.1) vector = 0;
         if (Math.abs(rotation) < 0.1) rotation = 0;
-        vector = vector < 0 ? -Math.pow(vector, 2) : Math.pow(vector, 2);
+        vector = Math.signum(vector) * Math.pow(vector, 2);
         double checking_vector = vector;
         vector *= Constants.SwerveDrive.VELOCITY_MULTIPLIER;
         rotation *= Constants.SwerveDrive.ROTATION_MULTIPLIER * 2;
