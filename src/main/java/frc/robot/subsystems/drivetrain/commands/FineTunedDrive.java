@@ -50,9 +50,6 @@ public class FineTunedDrive extends CommandBase {
 
     @Override
     public void execute() {
-        Pose2d currentPosition = swerveDrive.getPose();
-//        System.out.println(Robot.navx.getYaw());
-//        System.out.println(currentPosition);
         double forward = forwardSupplier.getAsDouble();
         double strafe = strafeSupplier.getAsDouble();
         double rotation = rotationSupplier.getAsDouble();
@@ -73,12 +70,6 @@ public class FineTunedDrive extends CommandBase {
 
         if (Utils.isPaused(forward, strafe, rotation)) {
             swerveDrive.terminate();
-            isAngleSet = false;
-            return;
-        }
-
-        if (Utils.isProblematic(checking_vector, rotation)) {
-            swerveDrive.holonomicDrive(forward, strafe, rotation);
             isAngleSet = false;
             return;
         }
