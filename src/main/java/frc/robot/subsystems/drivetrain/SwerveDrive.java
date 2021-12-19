@@ -127,14 +127,15 @@ public class SwerveDrive extends SubsystemBase {
      * @return the speed of the robot in each axis.
      */
     public ChassisSpeeds getChassisSpeeds() {
-        SwerveModuleState[] swerveModuleStates = getStates();
-        ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(swerveModuleStates);
-        chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                chassisSpeeds.vxMetersPerSecond,
-                chassisSpeeds.vyMetersPerSecond,
-                chassisSpeeds.omegaRadiansPerSecond,
-                angleSupplier.get()
-        );
+        ChassisSpeeds chassisSpeeds = kinematics.toChassisSpeeds(getStates());
+        if (fieldOriented) {
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    chassisSpeeds.vxMetersPerSecond,
+                    chassisSpeeds.vyMetersPerSecond,
+                    chassisSpeeds.omegaRadiansPerSecond,
+                    angleSupplier.get().unaryMinus()
+            );
+        }
         return chassisSpeeds;
     }
 
