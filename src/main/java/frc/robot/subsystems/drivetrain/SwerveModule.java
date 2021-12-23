@@ -21,6 +21,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.StateSpaceUtils;
 import frc.robot.utils.SwerveModuleConfigBase;
+import webapp.FireLog;
 
 public class SwerveModule extends SubsystemBase {
     private final WPI_TalonFX driveMotor;
@@ -87,7 +88,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionCruiseVelocity(config.motionCruiseVelocity());
         angleMotor.configMotionSCurveStrength(config.curveStrength());
 
-        driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
     }
 
     /**
@@ -155,7 +156,7 @@ public class SwerveModule extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         var currentAngle = getAngle();
         var error = angle.minus(currentAngle);
-        if (Math.abs(angleUnitModel.toTicks(error.getRadians())) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
+        if (Math.abs(error.getRadians()) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
 
         angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error.getRadians()));
     }
@@ -231,6 +232,8 @@ public class SwerveModule extends SubsystemBase {
                 lastJ = config.j();
             }
         }
+        FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
+        FireLog.log("velocity " + config.wheel(), getVelocity());
         lastTime = currentTime;
         currentTime = timer.get();
     }

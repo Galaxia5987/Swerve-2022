@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.CommonSwerveConfig;
 import frc.robot.utils.SwerveModuleConfig;
 import frc.robot.utils.SwerveModuleConfigBase;
-import frc.robot.valuetuner.WebConstant;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
@@ -57,7 +56,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 4;
         public static final double ENCODER_TOLERANCE = 4; // [ticks]
 
-        public static final double ALLOWABLE_ANGLE_ERROR = 3 * Math.PI / 180; // [rad]
+        public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
         public static final double KP_TURN = 0.05;
@@ -87,11 +86,9 @@ public final class Constants {
         public static final int[] ZERO_POSITIONS = {1017, 496, 1327, 921}; // fr, fl, rr, rl
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-        public static final WebConstant[] PID = new WebConstant[]{new WebConstant("kp", 0), new WebConstant("ki", 0), new WebConstant("kd", 0)};
-        public static final WebConstant WHEEL = new WebConstant("Wheel", 0);
         public static final double RAMP_RATE = 2; // seconds from neutral to max
 
-        private static final double magicSafety = 1;
+        private static final double magicSafety = 0.7;
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
                 .configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)

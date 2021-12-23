@@ -1,11 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.FineTunedDrive;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive2;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -36,7 +37,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        a.whenPressed((Runnable) Robot::resetAngle);
+//        a.whenPressed((Runnable) Robot::resetAngle);
     }
 
     private void configureDefaultCommands() {
@@ -45,11 +46,14 @@ public class RobotContainer {
 //                () -> xbox.getX(GenericHID.Hand.kLeft),
 //                () -> xbox.getX(GenericHID.Hand.kRight)
 //        ));
-        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
-                () -> -joystick.getY(),
-                () -> joystick.getX(),
-                () -> joystick2.getX()
+
+        swerveDrive.setDefaultCommand(new HolonomicDrive2(swerveDrive,
+                () -> -xbox.getY(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kLeft),
+                () -> xbox.getX(GenericHID.Hand.kRight),
+                a::get
         ));
+
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
 /*
         swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
