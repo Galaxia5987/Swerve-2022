@@ -25,11 +25,6 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
     private RobotContainer m_robotContainer;
 
-    // LEDs
-    private AddressableLED m_led;
-    private AddressableLEDBuffer m_ledBuffer;
-    private int m_rainbowFirstPixelHue = 0;
-
     /**
      * Gets the current angle of the robot in respect to the start angle.
      *
@@ -64,21 +59,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         resetAngle();
         m_robotContainer = new RobotContainer();
-    }
-
-    private void rainbow() {
-        // For every pixel
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            // Calculate the hue - hue is easier for rainbows because the color
-            // shape is a circle so only one value needs to precess
-            final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
-            // Set the value
-            m_ledBuffer.setHSV(i, hue, 255, 128);
-        }
-        // Increase by to make the rainbow "move"
-        m_rainbowFirstPixelHue += 3;
-        // Check bounds
-        m_rainbowFirstPixelHue %= 180;
     }
 
     /**
@@ -131,23 +111,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        // PWM port 9
-        // Must be a PWM header, not MXP or DIO
-        m_led = new AddressableLED(1);
-        System.out.println("ikojasfjkasdkjaskljdaskljd");
-
-        // Reuse buffer
-        // Default to a length of 60, start empty output
-        // Length is expensive to set, so only set it once, then just update data
-        m_ledBuffer = new AddressableLEDBuffer(5);
-        m_led.setLength(m_ledBuffer.getLength());
-
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            // Sets the specified LED to the RGB values for red
-            m_ledBuffer.setRGB(i, 255, 0, 0);
-        }
-        m_led.setData(m_ledBuffer);
-        m_led.start();
     }
 
     /**
