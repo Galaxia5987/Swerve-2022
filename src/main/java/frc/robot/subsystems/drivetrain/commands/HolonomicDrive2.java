@@ -21,9 +21,6 @@ public class HolonomicDrive2 extends CommandBase {
     private final DoubleSupplier strafeSupplier;
     private final DoubleSupplier rotationSupplier;
 
-    private final SlewRateLimiter vxFilter = new SlewRateLimiter(1);
-    private final SlewRateLimiter vyFilter = new SlewRateLimiter(1);
-
     private final PIDController forwardController = new PIDController(0.12, 0, 0);
     private final PIDController strafeController = new PIDController(0.12, 0, 0);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(50, 0, 2, new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2));
@@ -38,7 +35,7 @@ public class HolonomicDrive2 extends CommandBase {
         this.forwardSupplier = forwardSupplier;
         this.strafeSupplier = strafeSupplier;
         this.rotationSupplier = rotationSupplier;
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+//        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(swerveDrive);
     }
@@ -46,7 +43,7 @@ public class HolonomicDrive2 extends CommandBase {
     @Override
     public void initialize() {
         storedYaw = Robot.getAngle().getRadians();
-        thetaController.reset(Robot.getAngle().getRadians(), swerveDrive.getChassisSpeeds().omegaRadiansPerSecond);
+        thetaController.reset(0, swerveDrive.getChassisSpeeds().omegaRadiansPerSecond);
     }
 
     @Override
@@ -56,19 +53,19 @@ public class HolonomicDrive2 extends CommandBase {
         // get the values
         double forward = forwardSupplier.getAsDouble();
         double strafe = strafeSupplier.getAsDouble();
-        double rotation = Utils.deadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
+        double rotation = Utils.rotationalDeadband(rotationSupplier.getAsDouble(), Constants.SwerveDrive.JOYSTICK_THRESHOLD) * Constants.SwerveDrive.ROTATION_MULTIPLIER;
         ChassisSpeeds currentState = swerveDrive.getChassisSpeeds();
 
         // recalculate - update based on the angle and the magnitude
         double alpha = Math.atan2(forward, strafe); // direction of movement
-        double magnitude = Utils.deadband(Math.hypot(forward, strafe), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-        forward = vxFilter.calculate(Math.sin(alpha) * magnitude) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
-        strafe = vyFilter.calculate(Math.cos(alpha) * magnitude) * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
+        double magnitude = Utils.rotationalDeadband(Math.hypot(forward, strafe), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
+        forward = Math.sin(alpha) * magnitude * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
+        strafe = Math.cos(alpha) * magnitude * Constants.SwerveDrive.VELOCITY_MULTIPLIER;
 
         if (rotation != 0 || Math.abs(currentState.omegaRadiansPerSecond) > 0.05) {
             storedYaw = Robot.getAngle().getRadians();
         } else if (forward != 0 || strafe != 0) { // moves without rotating, keep the same angle.
-            rotation += thetaController.calculate(Robot.getAngle().getRadians(), storedYaw);
+            rotation += thetaController.calculate(Math.cos(storedYaw - Robot.getAngle().getRadians()), 0);
         }
         FireLog.log("current_forward", currentState.vxMetersPerSecond);
         FireLog.log("target_angle", forward);

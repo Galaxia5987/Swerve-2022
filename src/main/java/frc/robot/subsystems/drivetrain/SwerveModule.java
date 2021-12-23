@@ -87,6 +87,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionCruiseVelocity(config.motionCruiseVelocity());
         angleMotor.configMotionSCurveStrength(config.curveStrength());
 
+        driveMotor.configClosedloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
     }
 
     /**

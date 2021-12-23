@@ -34,6 +34,14 @@ public class Utils {
         return val;
     }
 
+    public static double rotationalDeadband(double input, double threshold) {
+        if (Math.abs(input) < threshold)
+            return 0;
+        else
+            return (input - (Math.signum(input) * threshold)) / (1 - threshold);
+    }
+
+
     /**
      * sets the joystick vector value to 1 if the value is greater than the threshold
      *

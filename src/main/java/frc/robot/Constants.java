@@ -89,6 +89,8 @@ public final class Constants {
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final WebConstant[] PID = new WebConstant[]{new WebConstant("kp", 0), new WebConstant("ki", 0), new WebConstant("kd", 0)};
         public static final WebConstant WHEEL = new WebConstant("Wheel", 0);
+        public static final double RAMP_RATE = 2; // seconds from neutral to max
+
         private static final double magicSafety = 1;
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfig.Builder(0)
                 .configCommonConfig(SwerveDrive.commonConfig)
