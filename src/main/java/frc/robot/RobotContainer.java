@@ -54,6 +54,19 @@ public class RobotContainer {
                 a::get
         ));
 
+//        swerveDrive.setDefaultCommand(new LockOnTarget(swerveDrive,
+//                () -> -xbox.getY(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kLeft),
+//                () -> Utils.getLockRotation(xbox.getX(GenericHID.Hand.kRight), -xbox.getY(GenericHID.Hand.kRight))
+//        ));
+
+//        swerveDrive.setDefaultCommand(new SlowWhileHeld(swerveDrive,
+//                () -> -xbox.getY(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kLeft),
+//                () -> xbox.getX(GenericHID.Hand.kRight),
+//                () -> xbox.getTriggerAxis(GenericHID.Hand.kRight) > 0.3
+//        ));
+
 //        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
 /*
         swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,

@@ -83,10 +83,10 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {1017, 496, 1327, 921}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {998, 481, 1329, 914}; // fr, fl, rr, rl
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
-        public static final double RAMP_RATE = 2; // seconds from neutral to max
+        public static final double RAMP_RATE = 1; // seconds from neutral to max
 
         private static final double magicSafety = 0.7;
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfig.Builder(0)
@@ -105,7 +105,7 @@ public final class Constants {
                 .configAnglePID(13, 0.0045, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
                 .configJ(0.0322)
-                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
+                    .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfig.Builder(2)
                 .configCommonConfig(SwerveDrive.commonConfig)

@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 public class Utils {
     public static double PROBLEMATIC_LOW_SPEEDS_DEADBAND = 0.25;
 
@@ -90,5 +92,12 @@ public class Utils {
         return forward == 0 && strafe == 0 && rotation != 0;
     }
 
+    public static Rotation2d getLockRotation(double x, double y) {
+        double magnitude = Math.hypot(x, y);
+        return magnitude > 0.4 ? new Rotation2d(Math.atan2(y, x)) : null;
+    }
 
+    public static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
 }
