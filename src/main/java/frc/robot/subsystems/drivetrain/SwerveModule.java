@@ -76,6 +76,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_kD(0, config.angle_kd(), Constants.TALON_TIMEOUT);
         angleMotor.config_kF(0, config.angle_kf(), Constants.TALON_TIMEOUT);
         angleMotor.config_IntegralZone(0, 5);
+        angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
 
         // set voltage compensation and saturation
         angleMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
@@ -159,7 +160,6 @@ public class SwerveModule extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         var currentAngle = getAngle();
         var error = angle.minus(currentAngle);
-        if (Math.abs(error.getRadians()) < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR) return;
 
         angleMotor.set(ControlMode.MotionMagic, angleMotor.getSelectedSensorPosition() + angleUnitModel.toTicks(error.getRadians()));
     }
