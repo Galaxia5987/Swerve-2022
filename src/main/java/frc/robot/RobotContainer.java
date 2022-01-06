@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.drivetrain.commands.HolonomicDrive2;
+import frc.robot.subsystems.drivetrain.commands.tuning.DriveForward;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -37,15 +38,10 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-//        a.whenPressed((Runnable) Robot::resetAngle);
     }
 
     private void configureDefaultCommands() {
-//        swerveDrive.setDefaultCommand(new FineTunedDrive(swerveDrive,
-//                () -> -xbox.getY(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kRight)
-//        ));
+//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
 
         swerveDrive.setDefaultCommand(new HolonomicDrive2(swerveDrive,
                 () -> -xbox.getY(GenericHID.Hand.kLeft),
@@ -54,27 +50,6 @@ public class RobotContainer {
                 a::get
         ));
 
-//        swerveDrive.setDefaultCommand(new LockOnTarget(swerveDrive,
-//                () -> -xbox.getY(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kLeft),
-//                () -> Utils.getLockRotation(xbox.getX(GenericHID.Hand.kRight), -xbox.getY(GenericHID.Hand.kRight))
-//        ));
-
-//        swerveDrive.setDefaultCommand(new SlowWhileHeld(swerveDrive,
-//                () -> -xbox.getY(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kLeft),
-//                () -> xbox.getX(GenericHID.Hand.kRight),
-//                () -> xbox.getTriggerAxis(GenericHID.Hand.kRight) > 0.3
-//        ));
-
-//        swerveDrive.setDefaultCommand(new Rotate(swerveDrive));
-/*
-        swerveDrive.setDefaultCommand(new DampedDrive(swerveDrive,
-                () -> -xbox.getY(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kRight)
-        ));
-*/
     }
 
 

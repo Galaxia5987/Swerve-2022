@@ -26,7 +26,7 @@ public class HolonomicDrive2 extends CommandBase {
     private final DoubleSupplier rotationSupplier;
     private final BooleanSupplier resetClicked;
 
-    private final ProfiledPIDController thetaController = new ProfiledPIDController(5, 0, 1, new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2));
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(1, 0, 1, new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2));
     private double storedYaw;
     private double lastRotationTime;
 

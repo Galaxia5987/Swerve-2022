@@ -1,19 +1,26 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.math.StateSpaceUtil;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
+import edu.wpi.first.wpilibj.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.wpiutil.math.Vector;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
@@ -28,8 +35,7 @@ public class SwerveModule extends SubsystemBase {
     private final UnitModel angleUnitModel;
 
     private final SwerveModuleConfigBase config;
-    private final Timer timer = new Timer();
-    private final LinearSystemLoop<N1, N1, N1> stateSpace;
+    private LinearSystemLoop<N1, N1, N1> stateSpace;
     private double currentTime, lastTime;
     private double lastJ;
 
@@ -40,8 +46,8 @@ public class SwerveModule extends SubsystemBase {
         driveUnitModel = new UnitModel(config.ticksPerMeter());
         angleUnitModel = new UnitModel(config.ticksPerRadian());
         stateSpace = constructLinearSystem(config.j());
+        stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * config.wheelRadius())));
         lastJ = config.j();
-
 
         // configure feedback sensors
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, Constants.TALON_TIMEOUT);
@@ -55,9 +61,6 @@ public class SwerveModule extends SubsystemBase {
 
         driveMotor.setSensorPhase(config.driveMotorSensorPhase());
         angleMotor.setSensorPhase(config.angleMotorSensorPhase());
-        Encoder encoder;
-        angleMotor.set(TalonSRXControlMode.Disabled, 0);
-        angleMotor.configFactoryDefault();
 
         // Set amperage limits
         SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(Constants.ENABLE_CURRENT_LIMIT, Constants.SwerveDrive.MAX_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_TIME);
@@ -75,9 +78,6 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_IntegralZone(0, 5);
 
         // set voltage compensation and saturation
-        driveMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
-        driveMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
-
         angleMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
         angleMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
 
@@ -100,21 +100,21 @@ public class SwerveModule extends SubsystemBase {
     private LinearSystemLoop<N1, N1, N1> constructLinearSystem(double J) {
         if (J == 0) throw new RuntimeException("J must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
-        LinearSystem<N1, N1, N1> stateSpace = StateSpaceUtils.createVelocityLinearSystem(Constants.Motor.TalonFX, config.driveMotorGearRatio(), J);
+        LinearSystem<N1, N1, N1> stateSpace = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), J, Constants.SwerveDrive.GEAR_RATIO_DRIVE_MOTOR);
         KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
-                VecBuilder.fill(config.modelTolerance()),
-                VecBuilder.fill(config.encoderTolerance()),
+                VecBuilder.fill(Constants.SwerveDrive.MODEL_TOLERANCE),
+                VecBuilder.fill(Constants.SwerveDrive.ENCODER_TOLERANCE),
                 Constants.LOOP_PERIOD
         );
-        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace,
-                VecBuilder.fill(config.velocityTolerance()),
-                VecBuilder.fill(Constants.NOMINAL_VOLTAGE),
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE),
+                VecBuilder.fill(Constants.SwerveDrive.COST_LQR),
                 Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 
         return new LinearSystemLoop<>(stateSpace, lqr, kalman, Constants.NOMINAL_VOLTAGE, Constants.LOOP_PERIOD);
     }
+
 
     /**
      * @return the speed of the wheel. [m/s]
@@ -124,22 +124,24 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Sets the speed of the wheel.
+     * Sets the velocity of the wheel.
      *
-     * @param speed the speed of the wheel.[m/s]
+     * @param velocity the velocity of the module.[m/s]
      */
-    public void setVelocity(double speed) {
+    public void setVelocity(double velocity) {
         double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
         double currentSpeed = getVelocity() / (2 * Math.PI * config.wheelRadius()); // [rps]
-        double targetSpeed = speed / (2 * Math.PI * config.wheelRadius()); // [rps]
+        double targetSpeed = velocity / (2 * Math.PI * config.wheelRadius()); // [rps]
 
         stateSpace.setNextR(VecBuilder.fill(targetSpeed)); // r = reference (setpoint)
         stateSpace.correct(VecBuilder.fill(currentSpeed));
         stateSpace.predict(timeInterval);
 
         double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
+        if (getWheel() == 1)
+            System.out.println("voltage " + voltageToApply + " velocity: " + getVelocity() + " target: " + velocity + " rps: " + currentSpeed + " " + targetSpeed + " " + timeInterval + " " + config.j() +" " + config.wheelRadius());
         // returns the voltage to apply (between -12 and 12)
-        driveMotor.set(ControlMode.PercentOutput, voltageToApply / Constants.NOMINAL_VOLTAGE);
+        driveMotor.setVoltage(voltageToApply);
     }
 
     /**
@@ -229,13 +231,16 @@ public class SwerveModule extends SubsystemBase {
         if (config.debug()) {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
-                constructLinearSystem(config.j());
+                stateSpace = constructLinearSystem(config.j());
+                stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * config.wheelRadius())));
+                System.out.println("Hello" + config.j());
                 lastJ = config.j();
             }
         }
         FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
         FireLog.log("velocity " + config.wheel(), getVelocity());
+        stateSpace.getObserver().reset();
         lastTime = currentTime;
-        currentTime = timer.get();
+        currentTime = Timer.getFPGATimestamp();
     }
 }

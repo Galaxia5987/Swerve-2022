@@ -17,7 +17,7 @@ public final class Constants {
     public static final boolean ENABLE_CURRENT_LIMIT = true;
 
     public enum Motor {
-        TalonFX(12, 4.69, 257, 1.6, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
+        TalonFX(12, 4.69, 257, 1.5, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
         TalonSRX(12, 0.7, 130, 3.8, Units.rotationsPerMinuteToRadiansPerSecond(21020.0)),
         NEO(12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5657.0)),
         NEO500(12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(1100));
@@ -52,9 +52,10 @@ public final class Constants {
         public static final int MAX_CURRENT = 15; // [amps]
 
         // State Space
-        public static final double VELOCITY_TOLERANCE = 20; // [rps]
-        public static final double MODEL_TOLERANCE = 4;
-        public static final double ENCODER_TOLERANCE = 4; // [ticks]
+        public static final double VELOCITY_TOLERANCE = 5; // [RPS]
+        public static final double COST_LQR = 11;
+        public static final double MODEL_TOLERANCE = 0.01;
+        public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
@@ -74,16 +75,17 @@ public final class Constants {
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
         public static final double JOYSTICK_THRESHOLD = 0.1;
-        public static final double VELOCITY_MULTIPLIER = 3 * 3.5; // 4 / Math.sqrt(2)
+        public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
 
         // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
-        public static final double ROTATION_MULTIPLIER = Math.PI * 3.5;
+        public static final double ROTATION_MULTIPLIER = Math.PI;
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {998, 481, 1329, 914}; // fr, fl, rr, rl
+
+        public static final int[] ZERO_POSITIONS = {880, 465, 1328, 913}; // fr, fl, rr, rl
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 1; // seconds from neutral to max
@@ -95,7 +97,7 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, DRIVE_SENSOR_PHASE_FR, ANGLE_SENSOR_PHASE_FR)
                 .configAnglePID(4.5, 0.0045, 1, 0)
                 .configZeroPosition(ZERO_POSITIONS[0])
-                .configJ(0.03165)
+                .configJ(0.115)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
         public static final SwerveModuleConfigBase flConfig = new SwerveModuleConfig.Builder(1)
@@ -104,8 +106,9 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_FL, ANGLE_INVERTED_FL, DRIVE_SENSOR_PHASE_FL, ANGLE_SENSOR_PHASE_FL)
                 .configAnglePID(13, 0.0045, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[1])
-                .configJ(0.0322)
-                    .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
+                .configJ(0.115)
+                .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
+                .enableDebug()
                 .build();
         public static final SwerveModuleConfigBase rrConfig = new SwerveModuleConfig.Builder(2)
                 .configCommonConfig(SwerveDrive.commonConfig)
@@ -113,7 +116,7 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_RR, ANGLE_INVERTED_RR, DRIVE_SENSOR_PHASE_RR, ANGLE_SENSOR_PHASE_RR)
                 .configAnglePID(8, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[2])
-                .configJ(0.03185)
+                .configJ(0.115)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
         public static final SwerveModuleConfigBase rlConfig = new SwerveModuleConfig.Builder(3)
@@ -122,7 +125,7 @@ public final class Constants {
                 .configInversions(DRIVE_INVERTED_RL, ANGLE_INVERTED_RL, DRIVE_SENSOR_PHASE_RL, ANGLE_SENSOR_PHASE_RL)
                 .configAnglePID(10, 0.004, 0, 0)
                 .configZeroPosition(ZERO_POSITIONS[3])
-                .configJ(0.03165)
+                .configJ(0.115)
                 .configMotionMagic((int) (2800 * magicSafety), (int) (550 * magicSafety), 4)
                 .build();
     }
