@@ -15,33 +15,6 @@ public final class Constants {
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
 
-    public enum Motor {
-        TalonFX(12, 4.69, 257, 1.5, Units.rotationsPerMinuteToRadiansPerSecond(6380.0)),
-        TalonSRX(12, 0.7, 130, 3.8, Units.rotationsPerMinuteToRadiansPerSecond(21020.0)),
-        NEO(12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5657.0)),
-        NEO500(12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(1100));
-
-        public final double nominalVoltage; // [volts]
-        public final double stallTorque; // [N * m]
-        public final double stallCurrent; // [amps]
-        public final double freeCurrent; // [amps]
-        public final double freeSpeed; // [rad/sec]
-        public final double omega; // [ohms]
-        public final double Kv; // [rad/(sec*Volt)]
-        public final double Kt; // [n * m/ amps]
-
-        Motor(double nominalVoltageVolts, double stallTorqueNewtonMeters, double stallCurrentAmps, double freeCurrentAmps, double freeSpeedRadPerSec) {
-            this.nominalVoltage = nominalVoltageVolts;
-            this.stallTorque = stallTorqueNewtonMeters;
-            this.stallCurrent = stallCurrentAmps;
-            this.freeCurrent = freeCurrentAmps;
-            this.freeSpeed = freeSpeedRadPerSec;
-            this.omega = nominalVoltageVolts / stallCurrentAmps;
-            this.Kv = freeSpeedRadPerSec / (nominalVoltageVolts - omega * freeCurrentAmps);
-            this.Kt = stallTorqueNewtonMeters / stallCurrentAmps;
-        }
-    }
-
     public static final class SwerveDrive {
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
@@ -70,7 +43,7 @@ public final class Constants {
         public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
 
-        // the rotational speed of the robot, this constant multiplies the rotation output of the joystick
+        // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
