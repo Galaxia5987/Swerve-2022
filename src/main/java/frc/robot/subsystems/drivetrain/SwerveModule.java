@@ -1,11 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
@@ -80,13 +78,23 @@ public class SwerveModule extends SubsystemBase {
 
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
-        driveMotor.setSelectedSensorPosition(0);
+        driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
 
         angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
         angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
+        driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
+        angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
+
+        // It's in unreachable statement because we need to test it before we can use it.
+        if (false) {
+//            angleMotor.setStatusFramePeriod(StatusFrameEnhanced)
+//            driveMotor.setStatusFramePeriod(StatusFrameEnhanced)
+            angleMotor.configSelectedFeedbackCoefficient(1/Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
+            driveMotor.configSelectedFeedbackCoefficient(1/Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
+        }
     }
 
     /**

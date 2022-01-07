@@ -114,6 +114,10 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.115)
                 .build();
+
+        // TODO: Calibrate
+        public static final double DRIVE_NEUTRAL_DEADBAND = 0.1;
+        public static final double ANGLE_NEUTRAL_DEADBAND = 0.1;
     }
 
     public static class Autonomous {
