@@ -3,8 +3,6 @@ package frc.robot.utils;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 public class Utils {
-    public static double PROBLEMATIC_LOW_SPEEDS_DEADBAND = 0.25;
-
     /**
      * Gets the minimal error between two desired angles.
      *
@@ -42,7 +40,6 @@ public class Utils {
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
 
-
     /**
      * sets the joystick vector value to 1 if the value is greater than the threshold
      *
@@ -69,27 +66,6 @@ public class Utils {
         if (errorDeg < threshold)
             return alphaDeg + errorDeg;
         return alphaDeg;
-    }
-
-
-    public static boolean isProblematic(double vector, double rotation) {
-        return Math.abs(vector) <= PROBLEMATIC_LOW_SPEEDS_DEADBAND && rotation == 0;
-    }
-
-    public static boolean isPaused(double forward, double strafe, double rotation) {
-        return forward == 0 && strafe == 0 && rotation == 0;
-    }
-
-    public static boolean isStraightLine(double forward, double strafe, double rotation) {
-        return rotation == 0 && (forward != 0 || strafe != 0);
-    }
-
-    public static boolean isFlex(double forward, double strafe, double rotation) {
-        return rotation != 0 && (forward != 0 || strafe != 0);
-    }
-
-    public static boolean isRotationOnly(double forward, double strafe, double rotation) {
-        return forward == 0 && strafe == 0 && rotation != 0;
     }
 
     public static Rotation2d getLockRotation(double x, double y) {
