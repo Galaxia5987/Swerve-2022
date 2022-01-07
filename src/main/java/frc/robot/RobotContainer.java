@@ -6,8 +6,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.drivetrain.commands.HolonomicDrive2;
-import frc.robot.subsystems.drivetrain.commands.tuning.DriveForward;
+import frc.robot.subsystems.drivetrain.commands.HolonomicDrive;
 import frc.robot.valuetuner.ValueTuner;
 import webapp.Webserver;
 
@@ -43,7 +42,7 @@ public class RobotContainer {
     private void configureDefaultCommands() {
 //        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
 
-        swerveDrive.setDefaultCommand(new HolonomicDrive2(swerveDrive,
+        swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive,
                 () -> -xbox.getY(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kRight),

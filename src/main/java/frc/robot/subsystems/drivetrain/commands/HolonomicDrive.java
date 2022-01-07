@@ -19,7 +19,7 @@ import java.util.function.DoubleSupplier;
         commented out stuff
         mess with acceleration
 */
-public class HolonomicDrive2 extends CommandBase {
+public class HolonomicDrive extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final DoubleSupplier forwardSupplier;
     private final DoubleSupplier strafeSupplier;
@@ -30,7 +30,7 @@ public class HolonomicDrive2 extends CommandBase {
     private double storedYaw;
     private double lastRotationTime;
 
-    public HolonomicDrive2(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier resetClicked) {
+    public HolonomicDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier, BooleanSupplier resetClicked) {
         this.swerveDrive = swerveDrive;
         this.forwardSupplier = forwardSupplier;
         this.strafeSupplier = strafeSupplier;
