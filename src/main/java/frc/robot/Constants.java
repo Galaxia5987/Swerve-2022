@@ -1,10 +1,11 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.utils.SwerveModuleConfig;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.valuetuner.WebConstant;
 
 import static frc.robot.Ports.SwerveDrive.*;
 
@@ -31,6 +32,7 @@ public final class Constants {
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
+        public static final double ALLOWABLE_THETA_ERROR = Math.toRadians(0.05); // [rad]
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
@@ -40,6 +42,12 @@ public final class Constants {
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
+        public static final WebConstant THETA_KP = new WebConstant("Theta_kp", 1);
+        public static final WebConstant THETA_KI = new WebConstant("Theta_ki", 1);
+        public static final WebConstant THETA_KD = new WebConstant("Theta_kd", 1);
+        private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
+        private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
+
         public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
 
@@ -48,10 +56,21 @@ public final class Constants {
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final int ANGLE_CURVE_STRENGTH = 4;
+        public static final double ROTATION_DELAY = 0.1; // [sec]
+
         // angle motion magic
-        private static final float magicSafety = 0.7f;
-        public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * magicSafety);
-        public static final int ANGLE_CRUISE_VELOCITY = Math.round((550 * magicSafety));
+        private static final float MOTION_MAGIC_SAFETY = 0.7f;
+        public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
+        public static final int ANGLE_CRUISE_VELOCITY = Math.round((550 * MOTION_MAGIC_SAFETY));
+
+        // Axis systems
+        private static final double[] signX = {1, 1, -1, -1};
+        private static final double[] signY = {-1, 1, -1, 1};
+        public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{new Translation2d(signX[0] * Rx, -signY[0] * Ry),
+                new Translation2d(signX[1] * Rx, -signY[1] * Ry),
+                new Translation2d(signX[2] * Rx, -signY[2] * Ry),
+                new Translation2d(signX[3] * Rx, -signY[3] * Ry)
+        };
     }
 
     public static final class SwerveModule {

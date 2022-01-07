@@ -1,6 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -22,6 +25,10 @@ import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.SwerveModuleConfigBase;
 import webapp.FireLog;
 
+/**
+ * This subsystem represents a single Swerve module and is responsible for the basic operation of a module, such as,
+ * rotating to a specific angle, driving at a specific rate, and other convenience features for tuning the coefficients.
+ */
 public class SwerveModule extends SubsystemBase {
     private final WPI_TalonFX driveMotor;
     private final WPI_TalonSRX angleMotor;
@@ -39,7 +46,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor = new WPI_TalonSRX(config.angleMotorPort());
         driveUnitModel = new UnitModel(Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
         angleUnitModel = new UnitModel(Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
-        stateSpace = constructLinearSystem(config.j());
+        stateSpace = constructVelocityLinearSystem(config.j());
         stateSpace.reset(VecBuilder.fill(getVelocity()));
         lastJ = config.j();
 
@@ -65,10 +72,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.enableCurrentLimit(Constants.ENABLE_CURRENT_LIMIT);
 
         // set PIDF - angle motor
-        angleMotor.config_kP(0, config.angle_kp(), Constants.TALON_TIMEOUT);
-        angleMotor.config_kI(0, config.angle_ki(), Constants.TALON_TIMEOUT);
-        angleMotor.config_kD(0, config.angle_kd(), Constants.TALON_TIMEOUT);
-        angleMotor.config_kF(0, config.angle_kf(), Constants.TALON_TIMEOUT);
+        configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
 
@@ -92,28 +96,23 @@ public class SwerveModule extends SubsystemBase {
         if (false) {
 //            angleMotor.setStatusFramePeriod(StatusFrameEnhanced)
 //            driveMotor.setStatusFramePeriod(StatusFrameEnhanced)
-            angleMotor.configSelectedFeedbackCoefficient(1/Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
-            driveMotor.configSelectedFeedbackCoefficient(1/Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
+            angleMotor.configSelectedFeedbackCoefficient(1 / Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
+            driveMotor.configSelectedFeedbackCoefficient(1 / Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
         }
     }
 
     /**
-     * Initialize the linear system to the default values in order to use the state-space.
+     * Initialize the linear system to the default values in order to use the
+     * state-space model controlling the velocity of the drive motor.
      *
      * @return an object that represents the model to reach the velocity at the best rate.
      */
-    private LinearSystemLoop<N1, N1, N1> constructLinearSystem(double j) {
+    private LinearSystemLoop<N1, N1, N1> constructVelocityLinearSystem(double j) {
         if (j == 0) throw new RuntimeException("j must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
         LinearSystem<N1, N1, N1> stateSpace = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), j, Constants.SwerveDrive.GEAR_RATIO_DRIVE_MOTOR);
-        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
-                VecBuilder.fill(Constants.SwerveDrive.MODEL_TOLERANCE),
-                VecBuilder.fill(Constants.SwerveDrive.ENCODER_TOLERANCE),
-                Constants.LOOP_PERIOD
-        );
-        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE),
-                VecBuilder.fill(Constants.SwerveDrive.COST_LQR),
-                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace, VecBuilder.fill(Constants.SwerveDrive.MODEL_TOLERANCE), VecBuilder.fill(Constants.SwerveDrive.ENCODER_TOLERANCE), Constants.LOOP_PERIOD);
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE), VecBuilder.fill(Constants.SwerveDrive.COST_LQR), Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 
@@ -122,16 +121,18 @@ public class SwerveModule extends SubsystemBase {
 
 
     /**
-     * @return the speed of the wheel. [m/s]
+     * Gets the velocity of the drive motor.
+     *
+     * @return the velocity of the wheel. [m/s]
      */
     public double getVelocity() {
         return driveUnitModel.toVelocity(driveMotor.getSelectedSensorVelocity(0));
     }
 
     /**
-     * Sets the velocity of the wheel.
+     * Sets the velocity of the drive motor.
      *
-     * @param velocity the velocity of the module.[m/s]
+     * @param velocity the velocity of the module. [m/s]
      */
     public void setVelocity(double velocity) {
         double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
@@ -145,14 +146,16 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * @return the angle of the wheel. [rad]
+     * Gets the angle that the module is pointing.
+     *
+     * @return the angle of the module. [rad]
      */
     public Rotation2d getAngle() {
         return new Rotation2d(Math.IEEEremainder(angleUnitModel.toUnits(angleMotor.getSelectedSensorPosition() - config.zeroPosition()), 2 * Math.PI));
     }
 
     /**
-     * Sets the angle of the wheel, in consideration of the shortest path to the target angle.
+     * Sets the angle of the module, with consideration of the shortest path to the target angle.
      *
      * @param angle the target angle.
      */
@@ -164,6 +167,8 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
+     * Gets the state of the module.
+     *
      * @return the current state of the module.
      */
     public SwerveModuleState getState() {
@@ -181,21 +186,21 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Stops the angle motor.
+     * Stops the angle motor from moving.
      */
     public void stopAngleMotor() {
         angleMotor.stopMotor();
     }
 
     /**
-     * Stops the drive motor.
+     * Stops the drive motor from moving.
      */
     public void stopDriveMotor() {
         driveMotor.stopMotor();
     }
 
     /**
-     * Runs the motor at full power.
+     * Runs the motor at full power (only used for testing purposes).
      */
     public void setMaxOutput() {
         angleMotor.set(ControlMode.PercentOutput, 1);
@@ -211,7 +216,15 @@ public class SwerveModule extends SubsystemBase {
         return config.wheel();
     }
 
-    public void configPID(double kp, double ki, double kd, double kf) {
+    /**
+     * Configures the pid coefficients of the angle motor.
+     *
+     * @param kp proportional coefficients.
+     * @param ki integral coefficients.
+     * @param kd derivative coefficients.
+     * @param kf feedforward coefficients.
+     */
+    private void configPID(double kp, double ki, double kd, double kf) {
         angleMotor.config_kP(0, kp, Constants.TALON_TIMEOUT);
         angleMotor.config_kI(0, ki, Constants.TALON_TIMEOUT);
         angleMotor.config_kD(0, kd, Constants.TALON_TIMEOUT);
@@ -223,7 +236,7 @@ public class SwerveModule extends SubsystemBase {
         if (config.debug()) {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
-                stateSpace = constructLinearSystem(config.j());
+                stateSpace = constructVelocityLinearSystem(config.j());
                 stateSpace.reset(VecBuilder.fill(getVelocity()));
                 System.out.println("Hello" + config.j());
                 lastJ = config.j();

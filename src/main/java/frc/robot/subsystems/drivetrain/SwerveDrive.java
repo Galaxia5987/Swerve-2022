@@ -1,37 +1,42 @@
 package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.utils.TimeDelayedBoolean;
 
-import java.util.function.Supplier;
 
+/**
+ * The {@code SwerveDrive} Subsystem is responsible for the integration of modules together in order to move the robot honolomicaly.
+ * The class contains several convenient methods for controlling the robot and retrieving information about his state.
+ *
+ * The subsystem has the capability to work in both field oriented and robot oriented mode.
+ */
 public class SwerveDrive extends SubsystemBase {
-    private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
-    private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
-    private static final double[] signX = {1, 1, -1, -1};
-    private static final double[] signY = {-1, 1, -1, 1};
-    private static SwerveDrive FIELD_RELATIVE_INSTANCE = null;
-    private static SwerveDrive INSTANCE = null;
+    private static SwerveDrive FIELD_ORIENTED_INSTANCE = null;
+    private static SwerveDrive ROBOT_ORIENTED_INSTANCE = null;
 
-    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            new Translation2d(signX[0] * Rx, -signY[0] * Ry),
-            new Translation2d(signX[1] * Rx, -signY[1] * Ry),
-            new Translation2d(signX[2] * Rx, -signY[2] * Ry),
-            new Translation2d(signX[3] * Rx, -signY[3] * Ry)
-    );
     private final SwerveModule[] modules = new SwerveModule[4];
-    private final Supplier<Rotation2d> angleSupplier = Robot::getAngle;
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, angleSupplier.get(), new Pose2d());
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Robot.getAngle(), new Pose2d());
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(
+            Constants.SwerveDrive.THETA_KP.get(),
+            Constants.SwerveDrive.THETA_KI.get(),
+            Constants.SwerveDrive.THETA_KD.get(),
+            new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2)
+    );
+    private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
+
 
     public SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
@@ -39,26 +44,29 @@ public class SwerveDrive extends SubsystemBase {
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
         modules[2] = new SwerveModule(Constants.SwerveModule.rrConfig);
         modules[3] = new SwerveModule(Constants.SwerveModule.rlConfig);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.reset(0, 0);
+        thetaController.setTolerance(Constants.SwerveDrive.ALLOWABLE_THETA_ERROR);
     }
 
     /**
      * @return the swerve in robot oriented mode.
      */
-    public static SwerveDrive getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new SwerveDrive(false);
+    public static SwerveDrive getRobotOrientedInstance() {
+        if (ROBOT_ORIENTED_INSTANCE == null) {
+            ROBOT_ORIENTED_INSTANCE = new SwerveDrive(false);
         }
-        return INSTANCE;
+        return ROBOT_ORIENTED_INSTANCE;
     }
 
     /**
      * @return the swerve in field oriented mode.
      */
-    public static SwerveDrive getFieldRelativeInstance() {
-        if (FIELD_RELATIVE_INSTANCE == null) {
-            FIELD_RELATIVE_INSTANCE = new SwerveDrive(true);
+    public static SwerveDrive getFieldOrientedInstance() {
+        if (FIELD_ORIENTED_INSTANCE == null) {
+            FIELD_ORIENTED_INSTANCE = new SwerveDrive(true);
         }
-        return FIELD_RELATIVE_INSTANCE;
+        return FIELD_ORIENTED_INSTANCE;
     }
 
     /**
@@ -71,34 +79,34 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Sets the wheels of the robot to the calculated angle and speed.
-     *
-     * @param speeds the chassis speeds.
-     */
-    public void holonomicDrive(ChassisSpeeds speeds) {
-        holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-    }
-
-    /**
-     * Sets the wheels of the robot to the calculated angle and speed.
+     * Move the swerve in the specified direction, rotation and velocity.
      *
      * @param forward  the Y value of the joystick
      * @param strafe   the X value of the joystick
      * @param rotation the rotation Z of the joystick
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
+        if (rotation == 0 &&
+                rotationDelay.update(Math.abs(thetaController.getGoal().position - Robot.getAngle()
+                                .getRadians()) < Constants.SwerveDrive.ALLOWABLE_THETA_ERROR,
+                        Constants.SwerveDrive.ROTATION_DELAY)
+        ) {
+            rotation = thetaController.calculate(Robot.getAngle().getRadians());
+        } else {
+            thetaController.reset(Robot.getAngle().getRadians());
+        }
         ChassisSpeeds speeds = fieldOriented ?
-                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, angleSupplier.get()) :
+                ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-//        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
+        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         setStates(states);
     }
 
     /**
-     * Gets te states of the modules.
+     * Gets te states of every module.
      *
-     * @return the states of the modules.
+     * @return the states of every module.
      */
     public SwerveModuleState[] getStates() {
         SwerveModuleState[] swerveModuleState = new SwerveModuleState[modules.length];
@@ -109,9 +117,9 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Sets the state of the motors.
+     * Sets the state of the modules.
      *
-     * @param states the states of the motors.
+     * @param states the states of the modules.
      */
     public void setStates(SwerveModuleState[] states) {
         for (SwerveModule module : modules) {
@@ -133,13 +141,15 @@ public class SwerveDrive extends SubsystemBase {
                     chassisSpeeds.vxMetersPerSecond,
                     chassisSpeeds.vyMetersPerSecond,
                     chassisSpeeds.omegaRadiansPerSecond,
-                    angleSupplier.get().unaryMinus()
+                    Robot.getAngle().unaryMinus()
             );
         }
         return chassisSpeeds;
     }
 
     /**
+     * Gets a specific module, shouldn't be used for regular cases.
+     *
      * @param index the index of the module.
      * @return the corresponding module.
      */
@@ -173,9 +183,15 @@ public class SwerveDrive extends SubsystemBase {
         odometry.resetPosition(new Pose2d(pose.getTranslation(), rotation), rotation);
     }
 
+    /**
+     * Resets the theta controller target angle.
+     */
+    public void resetThetaController() {
+        thetaController.reset(0, getChassisSpeeds().omegaRadiansPerSecond);
+    }
 
     /**
-     * Terminates the motors.
+     * Terminates the modules from moving.
      */
     public void terminate() {
         for (SwerveModule module : modules) {
@@ -187,10 +203,13 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.updateWithTime(Timer.getFPGATimestamp(),
-                angleSupplier.get(),
+                Robot.getAngle(),
                 getStates()
         );
+/*
+        thetaController.setP(Constants.SwerveDrive.THETA_KP.get());
+        thetaController.setI(Constants.SwerveDrive.THETA_KI.get());
+        thetaController.setD(Constants.SwerveDrive.THETA_KD.get());
+*/
     }
-
 }
-

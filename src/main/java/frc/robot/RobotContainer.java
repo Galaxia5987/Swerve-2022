@@ -16,7 +16,7 @@ public class RobotContainer {
     public static XboxController xbox = new XboxController(Ports.Controls.XBOX);
     public static Joystick joystick = new Joystick(2);
     public static Joystick joystick2 = new Joystick(3);
-    private final SwerveDrive swerveDrive = SwerveDrive.getFieldRelativeInstance();
+    private final SwerveDrive swerveDrive = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
 
@@ -27,28 +27,27 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings and default commands
         configureDefaultCommands();
+        configureButtonBindings();
 
         if (Robot.debug) {
             startValueTuner();
             startFireLog();
         }
-
-        configureButtonBindings();
     }
 
     private void configureButtonBindings() {
+        a.whenPressed(() -> {
+           Robot.resetAngle();
+            swerveDrive.resetThetaController();
+        });
     }
 
     private void configureDefaultCommands() {
-//        swerveDrive.setDefaultCommand(new DriveForward(swerveDrive));
-
         swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive,
                 () -> -xbox.getY(GenericHID.Hand.kLeft),
                 () -> xbox.getX(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kRight),
-                a::get
+                () -> xbox.getX(GenericHID.Hand.kRight)
         ));
-
     }
 
 
@@ -58,13 +57,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
         // An ExampleCommand will run in autonomous
-//        return new FollowPath(swerveDrive, "New New New New New New New New Path", 1, 0.75, new PIDController(Constants.Autonomous.kPXController, 0, 0),
-//                new PIDController(Constants.Autonomous.kPYController, 0, 0),
-//                new ProfiledPIDController(Constants.Autonomous.kPThetaController, 0, 0, Constants.Autonomous.kThetaControllerConstraints) {{
-//                    enableContinuousInput(-Math.PI, Math.PI);
-//                }});
         return null;
     }
 
