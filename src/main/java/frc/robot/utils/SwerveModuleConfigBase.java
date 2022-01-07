@@ -27,28 +27,5 @@ public interface SwerveModuleConfigBase {
 
     double zeroPosition();
 
-    int motionAcceleration();
-
-    int motionCruiseVelocity();
-
-    int curveStrength();
-
-    double ticksPerMeter();
-
-    double wheelRadius();
-
-    double ticksPerRadian();
-
-    int angleMaxCurrent();
-
-    double velocityTolerance();
-
-    double modelTolerance();
-
-    double encoderTolerance();
-
-    double driveMotorGearRatio();
-
     boolean debug();
-
 }

@@ -11,20 +11,16 @@ import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.math.StateSpaceUtil;
 import edu.wpi.first.wpilibj.system.LinearSystem;
 import edu.wpi.first.wpilibj.system.LinearSystemLoop;
 import edu.wpi.first.wpilibj.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
-import edu.wpi.first.wpiutil.math.Vector;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
-import frc.robot.utils.StateSpaceUtils;
 import frc.robot.utils.SwerveModuleConfigBase;
 import webapp.FireLog;
 
@@ -43,10 +39,10 @@ public class SwerveModule extends SubsystemBase {
         this.config = config;
         driveMotor = new WPI_TalonFX(config.driveMotorPort());
         angleMotor = new WPI_TalonSRX(config.angleMotorPort());
-        driveUnitModel = new UnitModel(config.ticksPerMeter());
-        angleUnitModel = new UnitModel(config.ticksPerRadian());
+        driveUnitModel = new UnitModel(Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
+        angleUnitModel = new UnitModel(Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
         stateSpace = constructLinearSystem(config.j());
-        stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * config.wheelRadius())));
+        stateSpace.reset(VecBuilder.fill(getVelocity()));
         lastJ = config.j();
 
         // configure feedback sensors
@@ -86,9 +82,9 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.setSelectedSensorPosition(0);
 
-        angleMotor.configMotionAcceleration(config.motionAcceleration());
-        angleMotor.configMotionCruiseVelocity(config.motionCruiseVelocity());
-        angleMotor.configMotionSCurveStrength(config.curveStrength());
+        angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
+        angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
+        angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
     }
@@ -131,18 +127,13 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setVelocity(double velocity) {
         double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
-        double currentSpeed = getVelocity() / (2 * Math.PI * config.wheelRadius()); // [rps]
-        double targetSpeed = velocity / (2 * Math.PI * config.wheelRadius()); // [rps]
 
-        stateSpace.setNextR(VecBuilder.fill(targetSpeed)); // r = reference (setpoint)
-        stateSpace.correct(VecBuilder.fill(currentSpeed));
+        stateSpace.setNextR(VecBuilder.fill(velocity)); // r = reference (setpoint)
+        stateSpace.correct(VecBuilder.fill(getVelocity()));
         stateSpace.predict(timeInterval);
 
-        double voltageToApply = stateSpace.getU(0); // u = input, calculated by the input.
-        if (getWheel() == 1)
-            System.out.println("voltage " + voltageToApply + " velocity: " + getVelocity() + " target: " + velocity + " rps: " + currentSpeed + " " + targetSpeed + " " + timeInterval + " " + config.j() +" " + config.wheelRadius());
-        // returns the voltage to apply (between -12 and 12)
-        driveMotor.setVoltage(voltageToApply);
+        // // u = input, the needed input in order to come to the next state optimally
+        driveMotor.setVoltage(stateSpace.getU(0));
     }
 
     /**
@@ -204,13 +195,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Resets the angle motor encoder position back to 0.
-     */
-    public void resetAngleMotor() {
-        angleMotor.setSelectedSensorPosition(0);
-    }
-
-    /**
      * Gets the wheel number.
      *
      * @return the wheel number.
@@ -232,13 +216,14 @@ public class SwerveModule extends SubsystemBase {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
                 stateSpace = constructLinearSystem(config.j());
-                stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * config.wheelRadius())));
+                stateSpace.reset(VecBuilder.fill(getVelocity()));
                 System.out.println("Hello" + config.j());
                 lastJ = config.j();
             }
         }
         FireLog.log("angle " + config.wheel(), getAngle().getDegrees());
         FireLog.log("velocity " + config.wheel(), getVelocity());
+        // There is no need for kalman, so we technically disable him that way
         stateSpace.getObserver().reset();
         lastTime = currentTime;
         currentTime = Timer.getFPGATimestamp();
