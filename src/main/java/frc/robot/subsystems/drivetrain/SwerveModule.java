@@ -110,9 +110,17 @@ public class SwerveModule extends SubsystemBase {
     private LinearSystemLoop<N1, N1, N1> constructVelocityLinearSystem(double j) {
         if (j == 0) throw new RuntimeException("j must have non-zero value");
         // https://file.tavsys.net/control/controls-engineering-in-frc.pdf Page 76
-        LinearSystem<N1, N1, N1> stateSpace = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), j, Constants.SwerveDrive.GEAR_RATIO_DRIVE_MOTOR);
-        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace, VecBuilder.fill(Constants.SwerveDrive.MODEL_TOLERANCE), VecBuilder.fill(Constants.SwerveDrive.ENCODER_TOLERANCE), Constants.LOOP_PERIOD);
-        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace, VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE), VecBuilder.fill(Constants.SwerveDrive.COST_LQR), Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
+        LinearSystem<N1, N1, N1> stateSpace = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1),
+                j, Constants.SwerveDrive.GEAR_RATIO_DRIVE_MOTOR);
+        KalmanFilter<N1, N1, N1> kalman = new KalmanFilter<>(Nat.N1(), Nat.N1(), stateSpace,
+                VecBuilder.fill(Constants.SwerveDrive.MODEL_TOLERANCE),
+                VecBuilder.fill(Constants.SwerveDrive.ENCODER_TOLERANCE),
+                Constants.LOOP_PERIOD
+        );
+        LinearQuadraticRegulator<N1, N1, N1> lqr = new LinearQuadraticRegulator<>(stateSpace,
+                VecBuilder.fill(Constants.SwerveDrive.VELOCITY_TOLERANCE),
+                VecBuilder.fill(Constants.SwerveDrive.COST_LQR),
+                Constants.LOOP_PERIOD // time between loops, DON'T CHANGE
         );
         lqr.latencyCompensate(stateSpace, Constants.LOOP_PERIOD, Constants.TALON_TIMEOUT * 0.001);
 

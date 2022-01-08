@@ -37,13 +37,13 @@ public class SwerveDrive extends SubsystemBase {
     private final TimeDelayedBoolean rotationDelay = new TimeDelayedBoolean();
     private final boolean fieldOriented;
 
-
     public SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
         modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
         modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
         modules[2] = new SwerveModule(Constants.SwerveModule.rrConfig);
         modules[3] = new SwerveModule(Constants.SwerveModule.rlConfig);
+
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.reset(0, 0);
         thetaController.setTolerance(Constants.SwerveDrive.ALLOWABLE_THETA_ERROR);
