@@ -1,7 +1,5 @@
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-
 public class Utils {
     /**
      * Gets the minimal error between two desired angles.
@@ -77,9 +75,10 @@ public class Utils {
 
     /**
      * Clamp the value between the [min, max] range.
+     *
      * @param value the value to check.
-     * @param min the minimal value.
-     * @param max the maximal value.
+     * @param min   the minimal value.
+     * @param max   the maximal value.
      * @return the value clamped.
      */
     public static double clamp(double value, double min, double max) {

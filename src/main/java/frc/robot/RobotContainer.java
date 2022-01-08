@@ -37,7 +37,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         a.whenPressed(() -> {
-           Robot.resetAngle();
+            Robot.resetAngle();
             swerveDrive.resetThetaController();
         });
     }

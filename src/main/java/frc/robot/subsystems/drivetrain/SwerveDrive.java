@@ -18,7 +18,7 @@ import frc.robot.utils.TimeDelayedBoolean;
 /**
  * The {@code SwerveDrive} Subsystem is responsible for the integration of modules together in order to move the robot honolomicaly.
  * The class contains several convenient methods for controlling the robot and retrieving information about his state.
- *
+ * <p>
  * The subsystem has the capability to work in both field oriented and robot oriented mode.
  */
 public class SwerveDrive extends SubsystemBase {

@@ -45,19 +45,16 @@ public final class Constants {
         public static final WebConstant THETA_KP = new WebConstant("Theta_kp", 1);
         public static final WebConstant THETA_KI = new WebConstant("Theta_ki", 1);
         public static final WebConstant THETA_KD = new WebConstant("Theta_kd", 1);
-        private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
-        private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
-
         public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
-
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final int ANGLE_CURVE_STRENGTH = 4;
         public static final double ROTATION_DELAY = 0.1; // [sec]
-
+        private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
+        private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);

@@ -14,22 +14,22 @@ import static spark.Spark.post;
 /**
  * The value tuner is a simple interface that allows you to change constants during run time.
  * This can be done by accessing the web interface located at http://10.59.87.2:5802 (roboRIO IP, port 5802).
- *
+ * <p>
  * The tuner provides 2 main interface classes:
- *   {@link WebConstant}
- *   {@link WebConstant#get}
- *   {@link WebConstantPIDTalon}
- *   WebConstant is passed a key and a value
- *   WebConstantPIDTalon is passed a key, initial PIDSet and the talon you want to configure
+ * {@link WebConstant}
+ * {@link WebConstant#get}
+ * {@link WebConstantPIDTalon}
+ * WebConstant is passed a key and a value
+ * WebConstantPIDTalon is passed a key, initial PIDSet and the talon you want to configure
  * Upon instantiation these interfaces will automatically configure themselves into the web interface
- *
+ * <p>
  * Example usage:
- *  public static WebConstant vision_kP = new WebConstant("vision_kP");
- *  vision_Kp.get();
- *  new WebConstantPIDTalon("turretTalon", pidSet[0], pidSet[1], pidSet[2], pidSet[3], turretMaster);
- *
- *  Notes:
- *    - A value key should only be used once, hence it's recommended to use static when instantiating constants.
+ * public static WebConstant vision_kP = new WebConstant("vision_kP");
+ * vision_Kp.get();
+ * new WebConstantPIDTalon("turretTalon", pidSet[0], pidSet[1], pidSet[2], pidSet[3], turretMaster);
+ * <p>
+ * Notes:
+ * - A value key should only be used once, hence it's recommended to use static when instantiating constants.
  */
 public class ValueTuner {
 
