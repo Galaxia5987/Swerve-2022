@@ -2,7 +2,7 @@ package frc.robot.utils;
 
 import frc.robot.valuetuner.WebConstant;
 
-public class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
+public final class SwerveModuleConfigDebug implements SwerveModuleConfigBase {
     private final int wheel;
 
     // ports
