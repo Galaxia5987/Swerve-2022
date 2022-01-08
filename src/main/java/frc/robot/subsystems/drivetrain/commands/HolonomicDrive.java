@@ -9,12 +9,15 @@ import webapp.FireLog;
 
 import java.util.function.DoubleSupplier;
 
+/**
+ * The command is responsible for moving the robot holonomically.
+ * The commands retrieve the velocities in every axis (including rotational) and moves the robot accordingly.
+ */
 public class HolonomicDrive extends CommandBase {
     private final SwerveDrive swerveDrive;
     private final DoubleSupplier forwardSupplier;
     private final DoubleSupplier strafeSupplier;
     private final DoubleSupplier rotationSupplier;
-
 
     public HolonomicDrive(SwerveDrive swerveDrive, DoubleSupplier forwardSupplier, DoubleSupplier strafeSupplier, DoubleSupplier rotationSupplier) {
         this.swerveDrive = swerveDrive;
@@ -23,10 +26,6 @@ public class HolonomicDrive extends CommandBase {
         this.rotationSupplier = rotationSupplier;
 
         addRequirements(swerveDrive);
-    }
-
-    @Override
-    public void initialize() {
     }
 
     @Override

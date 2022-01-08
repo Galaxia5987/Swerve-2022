@@ -6,8 +6,11 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.valuetuner.WebConstant;
 import webapp.FireLog;
 
+/**
+ * The Rotate command rotate the modules to a specified angle (in degrees) so it will
+ * be easier to tune the PID constants of the angle motor.
+ */
 public class Rotate extends CommandBase {
-
     private final SwerveDrive swerveDrive;
     private final WebConstant targetAngle = new WebConstant("targetAngle", 0);
 
