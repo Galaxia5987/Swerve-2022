@@ -34,6 +34,13 @@ public class Utils {
         return val;
     }
 
+    /**
+     * sets the value of the joystick to 0 if the value is less than the threshold,
+     *
+     * @param input     the joystick value.
+     * @param threshold the threshold value.
+     * @return 0 if val is less than the threshold else the value between 0 and 1 or -1.
+     */
     public static double rotationalDeadband(double input, double threshold) {
         if (Math.abs(input) < threshold)
             return 0;
@@ -68,11 +75,13 @@ public class Utils {
         return alphaDeg;
     }
 
-    public static Rotation2d getLockRotation(double x, double y) {
-        double magnitude = Math.hypot(x, y);
-        return magnitude > 0.4 ? new Rotation2d(Math.atan2(y, x)) : null;
-    }
-
+    /**
+     * Clamp the value between the [min, max] range.
+     * @param value the value to check.
+     * @param min the minimal value.
+     * @param max the maximal value.
+     * @return the value clamped.
+     */
     public static double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
     }
