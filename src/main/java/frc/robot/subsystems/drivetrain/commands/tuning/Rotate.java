@@ -18,19 +18,11 @@ public class Rotate extends CommandBase {
 
     @Override
     public void execute() {
-//        double rotation = -RobotContainer.Xbox.getY();
-//        rotation = Utils.joystickDeadband(rotation, Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-
-        swerveDrive.getModule(0).setAngle(Rotation2d.fromDegrees(targetAngle.get()));
-        swerveDrive.getModule(1).setAngle(Rotation2d.fromDegrees(targetAngle.get()));
-        swerveDrive.getModule(2).setAngle(Rotation2d.fromDegrees(targetAngle.get()));
-        swerveDrive.getModule(3).setAngle(Rotation2d.fromDegrees(targetAngle.get()));
+        for (int i = 0; i < 4; i++) {
+            swerveDrive.getModule(i).setAngle(Rotation2d.fromDegrees(targetAngle.get()));
+        }
 
         FireLog.log("angle-setpoint", targetAngle.get());
-        FireLog.log("module FR", swerveDrive.getModule(0).getAngle().getDegrees());
-        FireLog.log("module FL", swerveDrive.getModule(1).getAngle().getDegrees());
-        FireLog.log("module RR", swerveDrive.getModule(2).getAngle().getDegrees());
-        FireLog.log("module RL", swerveDrive.getModule(3).getAngle().getDegrees());
     }
 
     @Override
@@ -42,5 +34,4 @@ public class Rotate extends CommandBase {
     public void end(boolean interrupted) {
         swerveDrive.terminate();
     }
-
 }
