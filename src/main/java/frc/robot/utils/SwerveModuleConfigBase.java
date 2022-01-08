@@ -3,7 +3,10 @@ package frc.robot.utils;
 import frc.robot.valuetuner.WebConstant;
 
 /**
- *
+ * The interface encapsulates the module's unique properties, so it will be a lot easier and prettier to use it
+ * on different modules.
+ * There are 2 implementations for this interface, {@link frc.robot.utils.SwerveModuleConfig} and {@link frc.robot.utils.SwerveModuleConfigDebug},
+ * The first should be used on a general basis, while the other should be used when you want to tune the PID and moment of inertia constants.
  */
 public interface SwerveModuleConfigBase {
     int wheel();
