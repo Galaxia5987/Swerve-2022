@@ -8,11 +8,13 @@ import static frc.robot.Constants.LOOP_PERIOD;
 
 public class VoltageTest extends CommandBase {
     private final SwerveDrive swerveDrive;
+    private final double maxCycles;
     private double cycles = 0;
     private double initVoltage;
 
-    public VoltageTest(SwerveDrive swerveDrive) {
+    public VoltageTest(SwerveDrive swerveDrive, int cycles) {
         this.swerveDrive = swerveDrive;
+        this.maxCycles = cycles;
         addRequirements(swerveDrive);
     }
 
@@ -30,13 +32,13 @@ public class VoltageTest extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        swerveDrive.terminate();
-        System.out.println(initVoltage - RobotController.getBatteryVoltage());
+    public boolean isFinished() {
+        return cycles >= maxCycles;
     }
 
     @Override
-    public boolean isFinished() {
-        return (cycles >= 20);
+    public void end(boolean interrupted) {
+        swerveDrive.terminate();
+        System.out.println(initVoltage - RobotController.getBatteryVoltage());
     }
 }
