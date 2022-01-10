@@ -91,14 +91,6 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
         driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
         angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
-
-        // It's in unreachable statement because we need to test it before we can use it.
-        if (false) {
-//            angleMotor.setStatusFramePeriod(StatusFrameEnhanced)
-//            driveMotor.setStatusFramePeriod(StatusFrameEnhanced)
-            angleMotor.configSelectedFeedbackCoefficient(1 / Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
-            driveMotor.configSelectedFeedbackCoefficient(1 / Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
-        }
     }
 
     /**
@@ -246,7 +238,6 @@ public class SwerveModule extends SubsystemBase {
             if (config.j() != lastJ) {
                 stateSpace = constructVelocityLinearSystem(config.j());
                 stateSpace.reset(VecBuilder.fill(getVelocity()));
-                System.out.println("Hello" + config.j());
                 lastJ = config.j();
             }
         }

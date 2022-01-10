@@ -3,7 +3,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import frc.robot.utils.SwerveModuleConfig;
 import frc.robot.utils.SwerveModuleConfigBase;
 import frc.robot.valuetuner.WebConstant;
 
@@ -72,7 +71,7 @@ public final class Constants {
 
     public static final class SwerveModule {
 
-        public static final int[] ZERO_POSITIONS = {880, 465, 1328, 913}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-11, -6, -23, -18}; // fr, fl, rr, rl
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 1; // seconds from neutral to max
@@ -105,8 +104,8 @@ public final class Constants {
                 .build();
 
         // TODO: Calibrate
-        public static final double DRIVE_NEUTRAL_DEADBAND = 0.1;
-        public static final double ANGLE_NEUTRAL_DEADBAND = 0.1;
+        public static final double DRIVE_NEUTRAL_DEADBAND = 0.05;
+        public static final double ANGLE_NEUTRAL_DEADBAND = 0.07;
     }
 
     public static class Autonomous {
