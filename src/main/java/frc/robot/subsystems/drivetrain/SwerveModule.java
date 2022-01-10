@@ -47,7 +47,7 @@ public class SwerveModule extends SubsystemBase {
         driveUnitModel = new UnitModel(Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
         angleUnitModel = new UnitModel(Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
         stateSpace = constructVelocityLinearSystem(config.j());
-        stateSpace.reset(VecBuilder.fill(getVelocity()));
+        stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS)));
         lastJ = config.j();
 
         // configure feedback sensors
@@ -136,9 +136,11 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setVelocity(double velocity) {
         double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
+        double targetVelocity = velocity / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS),
+                currentVelocity = getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS);
 
-        stateSpace.setNextR(VecBuilder.fill(velocity)); // r = reference (setpoint)
-        stateSpace.correct(VecBuilder.fill(getVelocity()));
+        stateSpace.setNextR(VecBuilder.fill(targetVelocity)); // r = reference (setpoint)
+        stateSpace.correct(VecBuilder.fill(currentVelocity));
         stateSpace.predict(timeInterval);
 
         // // u = input, the needed input in order to come to the next state optimally
@@ -236,7 +238,7 @@ public class SwerveModule extends SubsystemBase {
         if (config.debug()) {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
-                stateSpace = constructVelocityLinearSystem(config.j());
+                stateSpace = constructVelocityLinearSystem(config.j() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS));
                 stateSpace.reset(VecBuilder.fill(getVelocity()));
                 lastJ = config.j();
             }

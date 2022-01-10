@@ -26,7 +26,7 @@ public final class Constants {
         public static final int MAX_CURRENT = 15; // [amps]
 
         // State Space
-        public static final double VELOCITY_TOLERANCE = 5 / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS); // [m/s]
+        public static final double VELOCITY_TOLERANCE = 5; // [rps]
         public static final double COST_LQR = 11;
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
