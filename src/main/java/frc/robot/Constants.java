@@ -15,6 +15,7 @@ public final class Constants {
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
 
+    // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
         public static final int TICKS_PER_ROTATION_DRIVE_MOTOR = 2048;
         public static final int TICKS_PER_ROTATION_ANGLE_MOTOR = 1024;
