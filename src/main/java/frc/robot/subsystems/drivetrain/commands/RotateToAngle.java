@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drivetrain.commands;
 
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -13,11 +12,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 public class RotateToAngle extends CommandBase {
 
     private final SwerveDrive swerveDrive;
-    private final ProfiledPIDController anglePID = new ProfiledPIDController(Constants.SwerveDrive.KP_TURN,
-            Constants.SwerveDrive.KI_TURN, Constants.SwerveDrive.KD_TURN,
-            new TrapezoidProfile.Constraints(Constants.SwerveDrive.ROTATION_MULTIPLIER, Constants.SwerveDrive.ROTATION_MULTIPLIER / 2)
-    );
-    private final double targetAngle;
+    private final Rotation2d targetAngle;
 
     /**
      * Initialize rotate to angle command.
@@ -27,30 +22,22 @@ public class RotateToAngle extends CommandBase {
      */
     public RotateToAngle(SwerveDrive swerveDrive, double targetAngle) {
         this.swerveDrive = swerveDrive;
-        this.targetAngle = targetAngle;
+        this.targetAngle = new Rotation2d(targetAngle);
         addRequirements(swerveDrive);
     }
 
     @Override
-    public void initialize() {
-        anglePID.reset(Robot.getAngle().getRadians());
-        anglePID.setGoal(targetAngle);
-        anglePID.enableContinuousInput(-Math.PI, Math.PI);
-        anglePID.setTolerance(Math.toRadians(1));
+    public void execute() {
+        swerveDrive.holonomicRotation(targetAngle);
     }
 
     @Override
-    public void execute() {
-        swerveDrive.holonomicDrive(0, 0, anglePID.calculate(Robot.getAngle().getRadians()));
+    public boolean isFinished() {
+        return Robot.getAngle().minus(targetAngle).getRadians() < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR;
     }
 
     @Override
     public void end(boolean interrupted) {
         swerveDrive.terminate();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return anglePID.atSetpoint();
     }
 }

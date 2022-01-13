@@ -104,6 +104,19 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
+     * Rotates the robot to a desired angle.
+     *
+     * @param desiredAngle the desired angle of the robot.
+     */
+    public void holonomicRotation(Rotation2d desiredAngle) {
+        thetaController.setGoal(desiredAngle.getRadians());
+        double output = thetaController.calculate(Robot.getAngle().getRadians());
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, output));
+        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
+        setStates(states);
+    }
+
+    /**
      * Gets te states of every module.
      *
      * @return the states of every module.

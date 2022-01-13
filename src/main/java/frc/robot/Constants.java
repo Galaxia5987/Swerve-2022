@@ -36,15 +36,13 @@ public final class Constants {
         public static final double ALLOWABLE_ANGLE_ERROR = Math.toRadians(8); // [rad]
         public static final double WHEEL_RADIUS = 0.04688; // [m]
 
-        public static final double KP_TURN = 0.05;
-        public static final double KI_TURN = 0.02;
-        public static final double KD_TURN = 0;
-
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
+
         public static final WebConstant THETA_KP = new WebConstant("Theta_kp", 1);
         public static final WebConstant THETA_KI = new WebConstant("Theta_ki", 1);
         public static final WebConstant THETA_KD = new WebConstant("Theta_kd", 1);
+
         public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
@@ -72,11 +70,12 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-
         public static final int[] ZERO_POSITIONS = {-11, -6, -23, -18}; // fr, fl, rr, rl
+
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
         public static final double RAMP_RATE = 1; // seconds from neutral to max
+
         public static final SwerveModuleConfigBase frConfig = new SwerveModuleConfigBase.Builder(0).configPorts(DRIVE_MOTOR_FR, ANGLE_MOTOR_FR)
                 .configInversions(DRIVE_INVERTED_FR, ANGLE_INVERTED_FR, DRIVE_SENSOR_PHASE_FR, ANGLE_SENSOR_PHASE_FR)
                 .configAnglePID(4.5, 0.0045, 1, 0)
@@ -104,10 +103,6 @@ public final class Constants {
                 .configZeroPosition(ZERO_POSITIONS[3])
                 .configJ(0.115)
                 .build();
-
-        // TODO: Calibrate
-        public static final double DRIVE_NEUTRAL_DEADBAND = 0.05;
-        public static final double ANGLE_NEUTRAL_DEADBAND = 0.07;
     }
 
     public static class Autonomous {
@@ -116,5 +111,4 @@ public final class Constants {
         public static final double kPXController = 8;
         public static final double kPYController = 10;
     }
-
 }
