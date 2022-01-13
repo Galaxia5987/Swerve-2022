@@ -7,10 +7,14 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.valuetuner.WebConstant;
 import webapp.FireLog;
 
+/**
+ * The command is responsible for tuning the velocities of the drive motor.
+ * The command rotates the velocities the motor at a specified rate and log it into Fielog.
+ */
 public class DriveForward extends CommandBase {
 
     private final SwerveDrive swerveDrive;
-    private final WebConstant target = new WebConstant("targetSpeed", 0);
+    private final WebConstant target = new WebConstant("targetVelocity", 0);
 
     public DriveForward(SwerveDrive swerveDrive) {
         this.swerveDrive = swerveDrive;
@@ -19,21 +23,10 @@ public class DriveForward extends CommandBase {
 
     @Override
     public void execute() {
-//        double forward = Utils.joystickDeadband(-RobotContainer.Xbox.getY(), Constants.SwerveDrive.JOYSTICK_THRESHOLD);
-
-//        swerveDrive.stayAtAngle();
         for (int i = 0; i < 4; i++) {
             swerveDrive.getModule(i).setState(new SwerveModuleState(target.get(), new Rotation2d(0)));
-//         -   FireLog.log("speed " + i, Math.abs(swerveDrive.getModule(i).getSpeed()));
-//            swerveDrive.getModule(i).configPIDF();
         }
-//        swerveDrive.holonomicDrive(0, 0, forward);
-        FireLog.log("target speed", target.get());
-
-
-/*
-        FireLog.log("swerve direction", Robot.navx.getYaw());
-*/
+        FireLog.log("target velocity", target.get());
     }
 
     @Override

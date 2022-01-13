@@ -1,10 +1,6 @@
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-
 public class Utils {
-    public static double PROBLEMATIC_LOW_SPEEDS_DEADBAND = 0.25;
-
     /**
      * Gets the minimal error between two desired angles.
      *
@@ -36,12 +32,18 @@ public class Utils {
         return val;
     }
 
+    /**
+     * sets the value of the joystick to 0 if the value is less than the threshold,
+     *
+     * @param input     the joystick value.
+     * @param threshold the threshold value.
+     * @return 0 if val is less than the threshold else the value between 0 and 1 or -1.
+     */
     public static double rotationalDeadband(double input, double threshold) {
         if (Math.abs(input) < threshold)
             return 0;
         return (input - (Math.signum(input) * threshold)) / (1 - threshold);
     }
-
 
     /**
      * sets the joystick vector value to 1 if the value is greater than the threshold
@@ -71,32 +73,14 @@ public class Utils {
         return alphaDeg;
     }
 
-
-    public static boolean isProblematic(double vector, double rotation) {
-        return Math.abs(vector) <= PROBLEMATIC_LOW_SPEEDS_DEADBAND && rotation == 0;
-    }
-
-    public static boolean isPaused(double forward, double strafe, double rotation) {
-        return forward == 0 && strafe == 0 && rotation == 0;
-    }
-
-    public static boolean isStraightLine(double forward, double strafe, double rotation) {
-        return rotation == 0 && (forward != 0 || strafe != 0);
-    }
-
-    public static boolean isFlex(double forward, double strafe, double rotation) {
-        return rotation != 0 && (forward != 0 || strafe != 0);
-    }
-
-    public static boolean isRotationOnly(double forward, double strafe, double rotation) {
-        return forward == 0 && strafe == 0 && rotation != 0;
-    }
-
-    public static Rotation2d getLockRotation(double x, double y) {
-        double magnitude = Math.hypot(x, y);
-        return magnitude > 0.4 ? new Rotation2d(Math.atan2(y, x)) : null;
-    }
-
+    /**
+     * Clamp the value between the [min, max] range.
+     *
+     * @param value the value to check.
+     * @param min   the minimal value.
+     * @param max   the maximal value.
+     * @return the value clamped.
+     */
     public static double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
     }

@@ -5,7 +5,9 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -31,8 +33,7 @@ public class Robot extends TimedRobot {
      * @return the current angle of the robot in respect to the start angle.
      */
     public static Rotation2d getAngle() {
-        double currentAngle = (navx.getYaw() + 360) % 360;
-        return Rotation2d.fromDegrees(Math.IEEEremainder(currentAngle - startAngle, 360));
+        return Rotation2d.fromDegrees(navx.getYaw()).minus(Rotation2d.fromDegrees(startAngle));
     }
 
     /**
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
     public static void resetAngle(double angle) {
-        startAngle = (angle + 360) % 360;
+        startAngle = angle;
     }
 
     /**

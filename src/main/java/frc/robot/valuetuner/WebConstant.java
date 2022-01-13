@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class holds all the key value constants that will show up in the value tuner.
  */
 public class WebConstant {
-    private static Map<String, ConstantObject> constantMap = new ConcurrentHashMap<>();
+    private static final Map<String, ConstantObject> constantMap = new ConcurrentHashMap<>();
     private final ConstantObject constant;
 
     public WebConstant(String key, double value) {
@@ -15,12 +15,12 @@ public class WebConstant {
         constantMap.put(key, this.constant);
     }
 
-    public double get() {
-        return constant.getValue();
-    }
-
     public static Map<String, ConstantObject> getConstantMap() {
         return constantMap;
+    }
+
+    public double get() {
+        return constant.getValue();
     }
 
 }

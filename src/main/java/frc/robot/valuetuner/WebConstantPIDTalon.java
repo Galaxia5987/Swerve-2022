@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class holds all the Talon PID constants that will show up in the value tuner.
  */
 public class WebConstantPIDTalon {
-    private static Map<String, TalonConstant> constantMap = new ConcurrentHashMap<>();
+    private static final Map<String, TalonConstant> constantMap = new ConcurrentHashMap<>();
 
     public WebConstantPIDTalon(String key, double kP, double kI, double kD, double kF, BaseTalon talon) {
         constantMap.put(key, new TalonConstant(key, kP, kI, kD, kF, talon));

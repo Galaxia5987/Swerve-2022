@@ -51,10 +51,6 @@ public class FollowPath extends CommandBase {
         Pose2d currentPosition = swerveDrive.getPose();
         ChassisSpeeds speeds = hController.calculate(currentPosition, state, state.holonomicRotation);
         swerveDrive.setStates(swerveDrive.getKinematics().toSwerveModuleStates(speeds));
-//        System.out.println(speeds);
-//        System.out.println(target.getTotalTimeSeconds());
-//        System.out.println(swerveDrive.getPose());
-        System.out.println(currentPosition + " " + state.poseMeters);
     }
 
     @Override
