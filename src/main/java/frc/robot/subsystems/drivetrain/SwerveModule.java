@@ -143,7 +143,7 @@ public class SwerveModule extends SubsystemBase {
         stateSpace.correct(VecBuilder.fill(currentVelocity));
         stateSpace.predict(timeInterval);
 
-        // // u = input, the needed input in order to come to the next state optimally
+         // u = input, the needed input in order to come to the next state optimally
         driveMotor.setVoltage(stateSpace.getU(0));
     }
 

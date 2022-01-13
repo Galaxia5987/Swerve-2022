@@ -72,7 +72,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-//        m_led.setData(m_ledBuffer);
     }
 
     /**
@@ -93,8 +92,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
-//        FalconDashboard.INSTANCE.setFollowingPath(true);
-        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     }
 
     /**
