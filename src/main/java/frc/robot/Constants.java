@@ -29,6 +29,7 @@ public final class Constants {
         // State Space
         public static final double VELOCITY_TOLERANCE = 5; // [rps]
         public static final double COST_LQR = 11;
+        // Note that the values of MODEL_TOLERANCE and ENCODER_TOLERANCE should be a lot smaller (something like 1e-6)
         public static final double MODEL_TOLERANCE = 0.01;
         public static final double ENCODER_TOLERANCE = 0.01; // [ticks]
 
