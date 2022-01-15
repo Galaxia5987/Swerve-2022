@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import frc.robot.Robot;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 public class FireLog {
