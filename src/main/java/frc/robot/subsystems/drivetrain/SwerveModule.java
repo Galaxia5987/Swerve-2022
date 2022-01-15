@@ -143,7 +143,7 @@ public class SwerveModule extends SubsystemBase {
         stateSpace.correct(VecBuilder.fill(currentVelocity));
         stateSpace.predict(timeInterval);
 
-         // u = input, the needed input in order to come to the next state optimally
+        // u = input, the needed input in order to come to the next state optimally
         driveMotor.setVoltage(stateSpace.getU(0));
     }
 
@@ -238,8 +238,8 @@ public class SwerveModule extends SubsystemBase {
         if (config.debug()) {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
-                stateSpace = constructVelocityLinearSystem(config.j() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS));
-                stateSpace.reset(VecBuilder.fill(getVelocity()));
+                stateSpace = constructVelocityLinearSystem(config.j());
+                stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS)));
                 lastJ = config.j();
             }
         }
