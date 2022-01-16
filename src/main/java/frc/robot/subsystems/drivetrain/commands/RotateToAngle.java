@@ -33,7 +33,7 @@ public class RotateToAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Robot.getAngle().minus(targetAngle).getRadians() < Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR;
+        return Robot.getAngle().minus(targetAngle).getRadians() < Constants.SwerveDrive.ALLOWABLE_THETA_ERROR;
     }
 
     @Override
