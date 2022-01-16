@@ -23,6 +23,7 @@ import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.Constants;
 import frc.robot.subsystems.UnitModel;
 import frc.robot.utils.SwerveModuleConfigBase;
+import frc.robot.utils.Units;
 import webapp.FireLog;
 
 /**
@@ -47,7 +48,7 @@ public class SwerveModule extends SubsystemBase {
         driveUnitModel = new UnitModel(Constants.SwerveDrive.DRIVE_MOTOR_TICKS_PER_METER);
         angleUnitModel = new UnitModel(Constants.SwerveDrive.ANGLE_MOTOR_TICKS_PER_RADIAN);
         stateSpace = constructVelocityLinearSystem(config.j());
-        stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS)));
+        stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));
         lastJ = config.j();
 
         // configure feedback sensors
@@ -89,8 +90,10 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
-//        driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
-//        angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
+/*
+        driveMotor.configNeutralDeadband(Constants.SwerveModule.DRIVE_NEUTRAL_DEADBAND);
+        angleMotor.configNeutralDeadband(Constants.SwerveModule.ANGLE_NEUTRAL_DEADBAND);
+*/
     }
 
     /**
@@ -136,8 +139,8 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setVelocity(double velocity) {
         double timeInterval = Math.max(Constants.LOOP_PERIOD, currentTime - lastTime);
-        double targetVelocity = velocity / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS),
-                currentVelocity = getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS);
+        double targetVelocity = Units.metersPerSecondToRps(velocity, Constants.SwerveDrive.WHEEL_RADIUS);
+        double currentVelocity = Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS);
 
         stateSpace.setNextR(VecBuilder.fill(targetVelocity)); // r = reference (setpoint)
         stateSpace.correct(VecBuilder.fill(currentVelocity));
@@ -239,7 +242,7 @@ public class SwerveModule extends SubsystemBase {
             configPID(config.angle_kp(), config.angle_ki(), config.angle_kd(), config.angle_kf());
             if (config.j() != lastJ) {
                 stateSpace = constructVelocityLinearSystem(config.j());
-                stateSpace.reset(VecBuilder.fill(getVelocity() / (2 * Math.PI * Constants.SwerveDrive.WHEEL_RADIUS)));
+                stateSpace.reset(VecBuilder.fill(Units.metersPerSecondToRps(getVelocity(), Constants.SwerveDrive.WHEEL_RADIUS)));
                 lastJ = config.j();
             }
         }
