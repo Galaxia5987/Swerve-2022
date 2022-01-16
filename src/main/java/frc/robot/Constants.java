@@ -57,7 +57,7 @@ public final class Constants {
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CRUISE_VELOCITY = Math.round((550 * MOTION_MAGIC_SAFETY));
+        public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
 
         // Axis systems
         private static final double[] signX = {1, 1, -1, -1};
