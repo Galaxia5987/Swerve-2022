@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
     public static final boolean debug = true;
     private static final AHRS navx = new AHRS(SPI.Port.kMXP);
-    private static double startAngle;
+    private static Rotation2d startAngle;
     //    private final Compressor compressor = new Compressor(0);
     public PowerDistributionPanel pdp = new PowerDistributionPanel();
     private Command m_autonomousCommand;
@@ -33,14 +33,14 @@ public class Robot extends TimedRobot {
      * @return the current angle of the robot in respect to the start angle.
      */
     public static Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(navx.getYaw()).minus(Rotation2d.fromDegrees(startAngle));
+        return Rotation2d.fromDegrees(navx.getYaw()).minus(startAngle);
     }
 
     /**
      * Resets the angle of the navx to the current angle.
      */
     public static void resetAngle() {
-        resetAngle(navx.getYaw());
+        resetAngle(Rotation2d.fromDegrees(navx.getYaw()));
     }
 
     /**
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
      *
      * @param angle the angle in -180 to 180 degrees coordinate system.
      */
-    public static void resetAngle(double angle) {
+    public static void resetAngle(Rotation2d angle) {
         startAngle = angle;
     }
 
