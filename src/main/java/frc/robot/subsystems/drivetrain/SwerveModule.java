@@ -65,7 +65,12 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setSensorPhase(config.angleMotorSensorPhase());
 
         // Set amperage limits
-        SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(Constants.ENABLE_CURRENT_LIMIT, Constants.SwerveDrive.MAX_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT, Constants.SwerveModule.TRIGGER_THRESHOLD_TIME);
+        SupplyCurrentLimitConfiguration currLimitConfig = new SupplyCurrentLimitConfiguration(
+                Constants.ENABLE_CURRENT_LIMIT,
+                Constants.SwerveDrive.MAX_CURRENT,
+                Constants.SwerveModule.TRIGGER_THRESHOLD_CURRENT,
+                Constants.SwerveModule.TRIGGER_THRESHOLD_TIME
+        );
 
         driveMotor.configSupplyCurrentLimit(currLimitConfig);
 
@@ -77,6 +82,10 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.config_IntegralZone(0, 5);
         angleMotor.configAllowableClosedloopError(0, angleUnitModel.toTicks(Constants.SwerveDrive.ALLOWABLE_ANGLE_ERROR));
 
+        angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
+        angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
+        angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
+
         // set voltage compensation and saturation
         angleMotor.enableVoltageCompensation(Constants.ENABLE_VOLTAGE_COMPENSATION);
         angleMotor.configVoltageCompSaturation(Constants.NOMINAL_VOLTAGE);
@@ -84,10 +93,6 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.selectProfileSlot(0, 0);
         driveMotor.selectProfileSlot(1, 0);
         driveMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
-
-        angleMotor.configMotionAcceleration(Constants.SwerveDrive.ANGLE_MOTION_ACCELERATION);
-        angleMotor.configMotionCruiseVelocity(Constants.SwerveDrive.ANGLE_CRUISE_VELOCITY);
-        angleMotor.configMotionSCurveStrength(Constants.SwerveDrive.ANGLE_CURVE_STRENGTH);
 
         driveMotor.configOpenloopRamp(Constants.SwerveModule.RAMP_RATE, Constants.TALON_TIMEOUT);
 /*
@@ -191,13 +196,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Stops the angle motor from moving.
-     */
-    public void stopAngleMotor() {
-        angleMotor.stopMotor();
-    }
-
-    /**
      * Stops the drive motor from moving.
      */
     public void stopDriveMotor() {
@@ -205,11 +203,18 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
+     * Stops the angle motor from moving.
+     */
+    public void stopAngleMotor() {
+        angleMotor.stopMotor();
+    }
+
+    /**
      * Runs the motor at full power (only used for testing purposes).
      */
     public void setMaxOutput() {
-        angleMotor.set(ControlMode.PercentOutput, 1);
         driveMotor.set(ControlMode.PercentOutput, 1);
+        angleMotor.set(ControlMode.PercentOutput, 1);
     }
 
     /**

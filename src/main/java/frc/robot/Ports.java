@@ -35,9 +35,7 @@ public final class Ports {
         public static final boolean ANGLE_SENSOR_PHASE_RL = false;
     }
 
-
     public static class Controls {
         public static final int XBOX = 0;
     }
-
 }

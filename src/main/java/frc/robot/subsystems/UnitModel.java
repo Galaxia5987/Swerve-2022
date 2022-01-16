@@ -46,5 +46,4 @@ public class UnitModel {
     public int toTicks100ms(double velocity) {
         return (int) (velocity * ticksPerUnit / 10);
     }
-
 }

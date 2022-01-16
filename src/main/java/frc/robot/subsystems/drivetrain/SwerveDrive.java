@@ -81,9 +81,9 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * Move the swerve in the specified direction, rotation and velocity.
      *
-     * @param forward  the Y value of the joystick
-     * @param strafe   the X value of the joystick
-     * @param rotation the rotation Z of the joystick
+     * @param forward  the velocity on the Y-axis. [m/s]
+     * @param strafe   the velocity on the X-axis. [m/s]
+     * @param rotation rhe rotational velocity. [rad/s]
      */
     public void holonomicDrive(double forward, double strafe, double rotation) {
         if (rotation == 0 &&
