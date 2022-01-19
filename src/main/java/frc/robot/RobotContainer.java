@@ -19,6 +19,9 @@ public class RobotContainer {
     private final SwerveDrive swerveDrive = SwerveDrive.getFieldOrientedInstance();
     private final JoystickButton a = new JoystickButton(xbox, XboxController.Button.kA.value);
     private final JoystickButton b = new JoystickButton(xbox, XboxController.Button.kB.value);
+    private final JoystickButton leftStick = new JoystickButton(xbox, XboxController.Button.kStickLeft.value);
+    private double speedMultiplier = 1;
+    private boolean isTornadoMovement = false;
 
 
     /**
@@ -40,13 +43,15 @@ public class RobotContainer {
             Robot.resetAngle();
             swerveDrive.resetThetaController();
         });
+        leftStick.whenPressed(() -> speedMultiplier = 0.5).whenReleased(() -> speedMultiplier = 1);
+        b.whenPressed(() -> isTornadoMovement = !isTornadoMovement);
     }
 
     private void configureDefaultCommands() {
         swerveDrive.setDefaultCommand(new HolonomicDrive(swerveDrive,
-                () -> -xbox.getY(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kLeft),
-                () -> xbox.getX(GenericHID.Hand.kRight)
+                () -> -xbox.getY(GenericHID.Hand.kLeft) * speedMultiplier,
+                () -> xbox.getX(GenericHID.Hand.kLeft) * speedMultiplier,
+                () -> isTornadoMovement ? Math.signum(xbox.getX(GenericHID.Hand.kRight)) : xbox.getX(GenericHID.Hand.kRight)
         ));
     }
 
