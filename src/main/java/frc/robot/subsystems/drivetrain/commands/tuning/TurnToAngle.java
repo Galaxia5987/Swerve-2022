@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain.commands;
+package frc.robot.subsystems.drivetrain.commands.tuning;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -9,18 +9,18 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 /**
  * Rotates the entire chassis to a specified angle.
  */
-public class RotateToAngle extends CommandBase {
+public class TurnToAngle extends CommandBase {
 
     private final SwerveDrive swerveDrive;
     private final Rotation2d targetAngle;
 
     /**
-     * Initialize rotate to angle command.
+     * Initializes rotate to angle command.
      *
      * @param swerveDrive the SwerveDrive subsystem
      * @param targetAngle the target angle. [rad]
      */
-    public RotateToAngle(SwerveDrive swerveDrive, double targetAngle) {
+    public TurnToAngle(SwerveDrive swerveDrive, double targetAngle) {
         this.swerveDrive = swerveDrive;
         this.targetAngle = new Rotation2d(targetAngle);
         addRequirements(swerveDrive);
