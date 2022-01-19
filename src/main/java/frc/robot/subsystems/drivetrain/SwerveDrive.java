@@ -113,6 +113,7 @@ public class SwerveDrive extends SubsystemBase {
 
         setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(forward, strafe, output)));
     }
+
     /**
      * Gets te states of every module.
      *
@@ -214,7 +215,7 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         odometry.updateWithTime(Timer.getFPGATimestamp(),
-                Robot.getAngle(),
+                Robot.getAngle().unaryMinus(),
                 getStates()
         );
 /*
