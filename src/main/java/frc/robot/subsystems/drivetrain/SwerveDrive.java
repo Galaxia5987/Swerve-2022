@@ -107,13 +107,12 @@ public class SwerveDrive extends SubsystemBase {
      *
      * @param desiredAngle the desired angle of the robot.
      */
-    public void holonomicRotation(Rotation2d desiredAngle) {
+    public void holonomicDriveKeepSetpoint(double forward, double strafe, Rotation2d desiredAngle) {
         thetaController.setGoal(desiredAngle.getRadians());
         double output = thetaController.calculate(Robot.getAngle().getRadians());
 
-        setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, output)));
+        setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(forward, strafe, output)));
     }
-
     /**
      * Gets te states of every module.
      *
