@@ -98,9 +98,8 @@ public class SwerveDrive extends SubsystemBase {
         ChassisSpeeds speeds = fieldOriented ?
                 ChassisSpeeds.fromFieldRelativeSpeeds(forward, strafe, rotation, Robot.getAngle()) :
                 new ChassisSpeeds(forward, strafe, rotation);
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
-        setStates(states);
+
+        setStates(kinematics.toSwerveModuleStates(speeds));
     }
 
     /**
@@ -111,9 +110,8 @@ public class SwerveDrive extends SubsystemBase {
     public void holonomicRotation(Rotation2d desiredAngle) {
         thetaController.setGoal(desiredAngle.getRadians());
         double output = thetaController.calculate(Robot.getAngle().getRadians());
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, output));
-        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
-        setStates(states);
+
+        setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, output)));
     }
 
     /**
@@ -135,6 +133,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param states the states of the modules.
      */
     public void setStates(SwerveModuleState[] states) {
+        SwerveDriveKinematics.normalizeWheelSpeeds(states, Constants.SwerveDrive.VELOCITY_MULTIPLIER);
         for (SwerveModule module : modules) {
             SwerveModuleState state = states[module.getWheel()];
             state = SwerveModuleState.optimize(state, module.getAngle());

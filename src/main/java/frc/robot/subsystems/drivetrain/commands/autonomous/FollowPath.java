@@ -16,28 +16,20 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 public class FollowPath extends CommandBase {
     private final Timer timer = new Timer();
     private final SwerveDrive swerveDrive;
-    private final PIDController forwardPID;
-    private final PIDController strafePID;
-    private final ProfiledPIDController rotationPID;
     private final PathPlannerTrajectory target;
-    private HolonomicDriveController hController;
+    private final HolonomicDriveController hController;
 
     public FollowPath(SwerveDrive swerveDrive, String path, double maxVel, double maxAcceleration,
                       PIDController forwardPID, PIDController strafePID, ProfiledPIDController rotationPID) {
         this.swerveDrive = swerveDrive;
-
-        this.forwardPID = forwardPID;
-        this.strafePID = strafePID;
-        this.rotationPID = rotationPID;
-
         target = PathPlanner.loadPath(path, maxVel, maxAcceleration);
+        hController = new HolonomicDriveController(forwardPID, strafePID, rotationPID);
 
         addRequirements(swerveDrive);
     }
 
     @Override
     public void initialize() {
-        hController = new HolonomicDriveController(forwardPID, strafePID, rotationPID);
         timer.reset();
         timer.start();
         Robot.resetAngle();
