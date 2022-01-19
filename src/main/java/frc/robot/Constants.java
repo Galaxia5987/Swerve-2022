@@ -44,27 +44,23 @@ public final class Constants {
 
         public static final double ROBOT_LENGTH = 0.5924; // [m]
         public static final double ROBOT_WIDTH = 0.5924; // [m]
-        private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
-        private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
-
         public static final double VELOCITY_MULTIPLIER = 4 / Math.sqrt(2);
         // the rotational velocity of the robot, this constant multiplies the rotation output of the joystick
         public static final double ROTATION_MULTIPLIER = Math.PI;
-
         public static final double JOYSTICK_THRESHOLD = 0.1;
         public static final double OUTER_JOYSTICK_THRESHOLD = 0.95;
         public static final double JOYSTICK_ANGLE_DEADZONE = 5; // [degrees]
         public static final double ROTATION_DELAY = 0.1; // [sec]
-
+        public static final int ANGLE_CURVE_STRENGTH = 4;
+        private static final double Rx = Constants.SwerveDrive.ROBOT_WIDTH / 2;
+        private static final double Ry = Constants.SwerveDrive.ROBOT_LENGTH / 2;
         // angle motion magic
         private static final float MOTION_MAGIC_SAFETY = 0.7f;
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
-        public static final int ANGLE_CURVE_STRENGTH = 4;
-
         // Axis systems
         private static final double[] signX = {1, 1, -1, -1};
-        private static final double[] signY = {1, -1, 1, -1};
+        private static final double[] signY = {-1, 1, -1, 1};
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
                 new Translation2d(signX[0] * Rx, signY[0] * Ry),
                 new Translation2d(signX[1] * Rx, signY[1] * Ry),
@@ -74,7 +70,7 @@ public final class Constants {
     }
 
     public static final class SwerveModule {
-        public static final int[] ZERO_POSITIONS = {-11, -6, -23, -18}; // fr, fl, rr, rl
+        public static final int[] ZERO_POSITIONS = {-895, 567, 2775, 119}; // fr, fl, rr, rl
 
         public static final int TRIGGER_THRESHOLD_CURRENT = 2; // [amps]
         public static final double TRIGGER_THRESHOLD_TIME = 0.02; // [secs]
