@@ -3,6 +3,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpiutil.math.Matrix;
+import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.wpiutil.math.numbers.N1;
+import edu.wpi.first.wpiutil.math.numbers.N3;
 import frc.robot.utils.SwerveModuleConfigBase;
 import frc.robot.valuetuner.WebConstant;
 
@@ -59,6 +63,7 @@ public final class Constants {
         public static final int ANGLE_MOTION_ACCELERATION = Math.round(2800 * MOTION_MAGIC_SAFETY);
         public static final int ANGLE_CRUISE_VELOCITY = Math.round(550 * MOTION_MAGIC_SAFETY);
         // Axis systems
+        // TODO: check the coordinate system.
         private static final double[] signX = {1, 1, -1, -1};
         private static final double[] signY = {-1, 1, -1, 1};
         public static final Translation2d[] SWERVE_POSITIONS = new Translation2d[]{
@@ -110,5 +115,9 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
         public static final double kPXController = 8;
         public static final double kPYController = 10;
+
+        public static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0, 0, 0);
+        public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
+        public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
     }
 }
