@@ -2,11 +2,11 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,7 +27,11 @@ public class SwerveDrive extends SubsystemBase {
 
     private final SwerveModule[] modules = new SwerveModule[4];
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.SWERVE_POSITIONS);
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Robot.getAngle(), new Pose2d());
+    private final SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(Robot.getAngle(), new Pose2d(),
+            kinematics, Constants.Autonomous.stateStdDevs,
+            Constants.Autonomous.localMeasurementStdDevs,
+            Constants.Autonomous.visionMeasurementStdDevs,
+            Constants.LOOP_PERIOD);
     private final ProfiledPIDController thetaController = new ProfiledPIDController(
             Constants.SwerveDrive.THETA_KP.get(),
             Constants.SwerveDrive.THETA_KI.get(),
@@ -39,10 +43,10 @@ public class SwerveDrive extends SubsystemBase {
 
     public SwerveDrive(boolean fieldOriented) {
         this.fieldOriented = fieldOriented;
-        modules[0] = new SwerveModule(Constants.SwerveModule.frConfig);
-        modules[1] = new SwerveModule(Constants.SwerveModule.flConfig);
-        modules[2] = new SwerveModule(Constants.SwerveModule.rrConfig);
-        modules[3] = new SwerveModule(Constants.SwerveModule.rlConfig);
+        modules[Constants.SwerveModule.frConfig.wheel()] = new SwerveModule(Constants.SwerveModule.frConfig);
+        modules[Constants.SwerveModule.flConfig.wheel()] = new SwerveModule(Constants.SwerveModule.flConfig);
+        modules[Constants.SwerveModule.rrConfig.wheel()] = new SwerveModule(Constants.SwerveModule.rrConfig);
+        modules[Constants.SwerveModule.rlConfig.wheel()] = new SwerveModule(Constants.SwerveModule.rlConfig);
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.reset(0, 0);
@@ -175,7 +179,7 @@ public class SwerveDrive extends SubsystemBase {
      * @return the pose of the robot.
      */
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        return odometry.getEstimatedPosition();
     }
 
     /**
