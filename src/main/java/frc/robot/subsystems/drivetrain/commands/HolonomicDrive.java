@@ -34,6 +34,10 @@ public class HolonomicDrive extends CommandBase {
         ChassisSpeeds speeds = calculateVelocities();
         swerveDrive.holonomicDrive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
 
+        log(speeds);
+    }
+
+    protected void log(ChassisSpeeds speeds) {
         FireLog.log("current_angle", Robot.getAngle().getRadians());
         FireLog.log("forward", speeds.vxMetersPerSecond);
         FireLog.log("strafe", speeds.vyMetersPerSecond);
@@ -55,11 +59,6 @@ public class HolonomicDrive extends CommandBase {
         forward = Math.sin(alpha) * magnitude;
         strafe = Math.cos(alpha) * magnitude;
         return new ChassisSpeeds(forward, strafe, rotation);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
     }
 
     @Override
