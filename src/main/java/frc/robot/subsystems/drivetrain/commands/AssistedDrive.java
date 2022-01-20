@@ -79,7 +79,7 @@ public class AssistedDrive extends CommandBase {
             if (aimSupplier.getAsBoolean()) {
                 if (hubYaw == null) {
                     if (rotation == 0) {
-                        Translation2d diff = swerve.getPose().getTranslation().minus(HUB_POSITION);
+                        Translation2d diff = HUB_POSITION.minus(swerve.getPose().getTranslation());
                         double angle = Math.toDegrees(Math.atan2(diff.getY(), diff.getX()));
                         swerve.holonomicDrive(forward, strafe, profiledPIDController.calculate(-Robot.getAngle().getDegrees(), angle));
                         return;

@@ -24,8 +24,7 @@ public class FireReadyDrive extends HolonomicDrive {
     public void execute() {
         ChassisSpeeds speeds = calculateVelocities();
         double forward = speeds.vxMetersPerSecond, strafe = speeds.vyMetersPerSecond;
-
-        Translation2d diff = swerveDrive.getPose().getTranslation().minus(HUB_POSITION);
+        Translation2d diff = HUB_POSITION.minus(swerveDrive.getPose().getTranslation());
         Rotation2d angle = new Rotation2d(Math.atan2(diff.getY(), diff.getX()));
         swerveDrive.holonomicDriveKeepSetpoint(forward, strafe, angle);
         log(speeds);
