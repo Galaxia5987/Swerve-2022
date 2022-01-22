@@ -18,6 +18,7 @@ public final class Constants {
     public static final double NOMINAL_VOLTAGE = 12; // [volts]
     public static final boolean ENABLE_VOLTAGE_COMPENSATION = true;
     public static final boolean ENABLE_CURRENT_LIMIT = true;
+    public static final boolean INVERT_NAVX = true;
 
     // The order of modules is ALWAYS front-right (fr), front-left (fl), rear-right (rr), rear-left (rl)
     public static final class SwerveDrive {
