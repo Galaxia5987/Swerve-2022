@@ -114,5 +114,7 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints();
         public static final double kPXController = 8;
         public static final double kPYController = 10;
+        public static double kB = 2;
+        public static double kZeta = 0.7;
     }
 }
