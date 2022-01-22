@@ -14,11 +14,11 @@ public class PickupCargo extends CommandBase {
     private final DoubleSupplier cargoYaw;
 
     /**
-     * Pickup a cargo.
+     * Pickup a ca.rgo.
      *
      * @param swerveDrive the swerveDrive.
-     * @param speed the speed we should come to the cargo. [m/s]
-     * @param cargoYaw the yaw of the cargo relative to the robot. [degrees]
+     * @param speed       the speed we should come to the cargo. [m/s]
+     * @param cargoYaw    the yaw of the cargo relative to the robot. [degrees]
      */
     public PickupCargo(SwerveDrive swerveDrive, DoubleSupplier speed, DoubleSupplier cargoYaw) {
         this.swerveDrive = swerveDrive;
@@ -30,11 +30,11 @@ public class PickupCargo extends CommandBase {
     @Override
     public void execute() {
         double currentSpeed = speed.getAsDouble();
-        Rotation2d currentCargoYaw = Rotation2d.fromDegrees(cargoYaw.getAsDouble());
+        Rotation2d currentCargoYaw = Rotation2d.fromDegrees(cargoYaw.getAsDouble())
+                .plus(Robot.getAngle()); // field relative angle
         double forward = currentSpeed * currentCargoYaw.getCos();
         double strafe = currentSpeed * currentCargoYaw.getSin();
-        swerveDrive.holonomicDriveKeepSetpoint(forward, strafe, Robot.getAngle()
-                .plus(Rotation2d.fromDegrees(cargoYaw.getAsDouble())));
+        swerveDrive.holonomicDriveKeepSetpoint(forward, strafe, currentCargoYaw);
     }
 
     @Override
