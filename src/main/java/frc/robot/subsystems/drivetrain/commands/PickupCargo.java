@@ -14,7 +14,7 @@ public class PickupCargo extends CommandBase {
     private final DoubleSupplier cargoYaw;
 
     /**
-     * Pickup a ca.rgo.
+     * Pickup a cargo.
      *
      * @param swerveDrive the swerveDrive.
      * @param speed       the speed we should come to the cargo. [m/s]
