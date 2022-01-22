@@ -120,4 +120,8 @@ public final class Constants {
         public static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(0);
         public static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0, 0, 0);
     }
+
+    public static class Field {
+        public static final Translation2d HUB_POSITION = new Translation2d(6, 3);
+    }
 }

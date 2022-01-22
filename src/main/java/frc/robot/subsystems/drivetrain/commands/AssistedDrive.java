@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -15,7 +16,6 @@ public class AssistedDrive extends CommandBase {
     private static final double SPEED_MULTIPLIER = 3;
     private static final double ROTATION_MULTIPLIER = 3;
     private static final double MIN_CARGO_DISTANCE = 5;
-    private static final Translation2d HUB_POSITION = new Translation2d(6, 3);
     private final SwerveDrive swerve;
     private final DoubleSupplier cargoYaw;
     private final DoubleSupplier estimatedCargoDistance;
@@ -79,7 +79,7 @@ public class AssistedDrive extends CommandBase {
             if (aimSupplier.getAsBoolean()) {
                 if (hubYaw == null) {
                     if (rotation == 0) {
-                        Translation2d diff = HUB_POSITION.minus(swerve.getPose().getTranslation());
+                        Translation2d diff = Constants.Field.HUB_POSITION.minus(swerve.getPose().getTranslation());
                         double angle = Math.toDegrees(Math.atan2(diff.getY(), diff.getX()));
                         swerve.holonomicDrive(forward, strafe, profiledPIDController.calculate(-Robot.getAngle().getDegrees(), angle));
                         return;
