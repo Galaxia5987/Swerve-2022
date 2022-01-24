@@ -1,8 +1,7 @@
 package frc.robot.subsystems.example;
 
+import frc.robot.Constants;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ExampleSubsystemTest {
 
